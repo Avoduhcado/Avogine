@@ -27,12 +27,15 @@ public class GameFont {
 			String[] images = null;
 			
 			offset += fis.read(byteArray, 0, 4);
+			// BMFont specifications for the start of the file as read "BMF3"
 			if(byteArray[0] == 66 && byteArray[1] == 77 && byteArray[2] == 70 && byteArray[3] == 3) {
 				byte[] blockData = new byte[5];
 				byte[] block = null;
+				
 				while(offset < byteArray.length) {
 					offset += fis.read(blockData);
-					int length = blockData[4] << 24 | blockData[3] << 16 | blockData[2] << 8 | blockData[1];
+					// Bitmask stuff if shit starts breaking, signed bytes and stuff, woo Java
+					int length = ((blockData[1] & 0xff) << 0) | (blockData[2] << 8) | (blockData[3] << 16) | (blockData[4] << 24);
 					
 					switch(blockData[0]) {
 					case 1:
