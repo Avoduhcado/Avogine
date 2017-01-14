@@ -10,7 +10,7 @@ import core.entities.Entity;
 import core.entities.bodies.PlainBody;
 import core.entities.bodies.RigidBody;
 import core.entities.controllers.PlayerController;
-import core.entities.events.ImpulseEvent;
+import core.entities.events.BodyEvent;
 import core.entities.renders.PlainRender;
 import core.physics.world.World;
 import core.render.DrawUtils;
@@ -43,7 +43,7 @@ public class Stage extends GameSetup {
 		ent.setRender(new PlainRender(ent, "AGDG Logo"));
 		ent.setBody(new RigidBody(ent, new Vector3f(-416f, -16f, 0f), 32, 32));
 		entities.add(ent);
-		ent.fireEvent(new ImpulseEvent(new Vector3f(200,-200,0)));
+		ent.fireEvent(new BodyEvent(BodyEvent.IMPULSE, new Vector3f(200,-200,0)));
 		world.addBody(ent.getBody());
 		
 		ent = new Entity();

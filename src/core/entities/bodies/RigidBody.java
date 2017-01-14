@@ -5,9 +5,6 @@ import org.lwjgl.util.vector.Vector3f;
 import core.Theater;
 import core.entities.Entity;
 import core.entities.events.BodyEvent;
-import core.entities.events.ForceEvent;
-import core.entities.events.ImpulseEvent;
-import core.entities.events.MoveEvent;
 
 public class RigidBody extends Body {
 	private Vector3f position;
@@ -34,7 +31,6 @@ public class RigidBody extends Body {
 		setHeight(height);
 	}
 	
-	@Override
 	public void update() {
 		float timestep = Theater.getDeltaSpeed(0.025f);
 		Vector3f.add(velocity, (Vector3f) new Vector3f(acceleration).scale(timestep), velocity);
@@ -76,24 +72,18 @@ public class RigidBody extends Body {
 	}
 
 	@Override
-	public void processEvent(BodyEvent event) {
-		if(event instanceof MoveEvent) {
-			processMoveEvent((MoveEvent) event);
-		} else if(event instanceof ForceEvent) {
-			processForceEvent((ForceEvent) event);
-		} else if(event instanceof ImpulseEvent) {
-			processImpulseEvent((ImpulseEvent) event);
-		}
+	public void move(BodyEvent e) {
+		Vector3f.add(position, e.getMovement(), position);
 	}
-	
-	protected void processMoveEvent(MoveEvent event) {
-		Vector3f.add(position, event.getMovement(), position);
-	}
-	protected void processImpulseEvent(ImpulseEvent event) {
-		Vector3f.add(velocity, event.getImpulse(), velocity);
-	}
-	protected void processForceEvent(ForceEvent event) {
+
+	@Override
+	public void force(BodyEvent e) {
 		float timestep = Theater.getDeltaSpeed(0.025f);
-		Vector3f.add(acceleration, (Vector3f) new Vector3f(event.getForce()).scale(timestep), acceleration);
+		Vector3f.add(acceleration, (Vector3f) new Vector3f(e.getMovement()).scale(timestep), acceleration);
+	}
+
+	@Override
+	public void impulse(BodyEvent e) {
+		Vector3f.add(velocity, e.getMovement(), velocity);
 	}
 }
