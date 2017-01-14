@@ -33,34 +33,38 @@ public class Stage extends GameSetup {
 	public Stage() {
 		
 		world = new World();
+		world.setGravity(500);
+		
 		Entity ent = new Entity();
 		ent.setRender(new PlainRender(ent, "AGDG Logo"));
 		ent.setBody(new RigidBody(ent, new Vector3f(-432f, -32f, 0f), 32, 32));
 		entities.add(ent);
+		ent.fireEvent(new BodyEvent(BodyEvent.IMPULSE, new Vector3f(350,-350,0)));
 		world.addBody(ent.getBody());
 		
 		ent = new Entity();
 		ent.setRender(new PlainRender(ent, "AGDG Logo"));
 		ent.setBody(new RigidBody(ent, new Vector3f(-416f, -16f, 0f), 32, 32));
 		entities.add(ent);
-		ent.fireEvent(new BodyEvent(BodyEvent.IMPULSE, new Vector3f(200,-200,0)));
+		ent.fireEvent(new BodyEvent(BodyEvent.IMPULSE, new Vector3f(350,-400,0)));
 		world.addBody(ent.getBody());
 		
 		ent = new Entity();
 		ent.setRender(new PlainRender(ent, "AGDG Logo"));
 		ent.setBody(new RigidBody(ent, new Vector3f(-400f, 0f, 0f), 32, 32));
 		entities.add(ent);
+		ent.fireEvent(new BodyEvent(BodyEvent.IMPULSE, new Vector3f(350,-300,0)));
 		world.addBody(ent.getBody());
 		
 		ent = new Entity();
 		ent.setBody(new PlainBody(ent, new Vector3f(0f, 0f, 0f), 32, 32));
 		entities.add(ent);
 		
-		world.setGravity(100);
+		
 		
 		Camera.get().setFocus(ent.getBody());
 		
-		Camera.get().setClear(new Vector4f(1f, 1f, 0f, 1f));
+		Camera.get().setClear(new Vector4f(0f, 0f, 0f, 1f));
 	}
 	
 	@Override
