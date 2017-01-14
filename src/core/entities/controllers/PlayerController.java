@@ -37,8 +37,10 @@ public class PlayerController extends Controller {
 			}
 			
 			// Fire a movement event on the player for whichever movement key presses have occurred
-			entity.fireEvent(new MoveEvent((Vector3f) new Vector3f(e.getKeybind().equals(Keybind.RIGHT) ? 1f : e.getKeybind().equals(Keybind.LEFT) ? -1f : 0f,
-					e.getKeybind().equals(Keybind.UP) ? -1f : e.getKeybind().equals(Keybind.DOWN) ? 1f : 0f, 0f).scale(speed * speedModifier)));
+			entity.fireEvent(new MoveEvent((Vector3f) new Vector3f(
+					e.getKeybind().equals(Keybind.RIGHT) ? 1f : e.getKeybind().equals(Keybind.LEFT) ? -1f : 0f,
+					e.getKeybind().equals(Keybind.UP) ? -1f : e.getKeybind().equals(Keybind.DOWN) ? 1f : 0f, 0f)
+					.scale(speed * speedModifier)));
 		}
 	}
 	

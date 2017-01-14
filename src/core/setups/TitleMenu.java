@@ -72,14 +72,14 @@ public class TitleMenu extends GameSetup {
 		setFocus(buttons);
 						
 		// Play title track
-		try {
+		/*try {
 			menuTheme = AudioLoader.getStreamingAudio("OGG", ResourceLoader.getResource(
 					System.getProperty("resources") + "/music/" + "Menu" + ".ogg"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		
-		menuTheme.playAsMusic(1f, 1f, true);
+		menuTheme.playAsMusic(1f, 1f, true);*/
 	}
 	
 	@Override

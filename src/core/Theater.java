@@ -7,6 +7,8 @@ import org.newdawn.slick.openal.SoundStore;
 import core.scripts.Interpreter;
 import core.setups.GameSetup;
 import core.setups.SplashScreen;
+import core.setups.Stage;
+import core.setups.TitleMenu;
 import core.ui.event.TimeEvent;
 import core.utilities.Config;
 import core.utilities.text.Text;
@@ -90,7 +92,8 @@ public class Theater {
 		Text.loadFont("DEBUG", "Benegraphic");
 		Config.loadConfig();
 		
-		setSetup(new SplashScreen());
+		//setSetup(new SplashScreen());
+		setSetup(new TitleMenu());
 	}
 
 	/**

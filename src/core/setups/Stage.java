@@ -10,6 +10,7 @@ import core.entities.Entity;
 import core.entities.bodies.PlainBody;
 import core.entities.controllers.PlayerController;
 import core.entities.renders.PlainRender;
+import core.physics.world.World;
 import core.render.DrawUtils;
 import core.ui.event.KeybindEvent;
 import core.ui.event.KeybindListener;
@@ -21,6 +22,8 @@ public class Stage extends GameSetup {
 			
 	private boolean pause;
 	
+	private World world = new World();
+	
 	private ArrayList<Entity> entities = new ArrayList<Entity>();
 	
 	private KeybindListener keybindListener = new StageKeybindListener();
@@ -28,14 +31,22 @@ public class Stage extends GameSetup {
 	public Stage() {
 		Entity ent = new Entity();
 		ent.setRender(new PlainRender(ent, "AGDG Logo"));
+		ent.setBody(new PlainBody(ent, new Vector3f(-32f, -32f, 0f), 32, 32));
+		ent.setController(new PlayerController(ent));
+		//ent.addComponent(AutorunInteraction.class, new AutorunInteraction(ent, new Script(ent, "Butts")));
+		entities.add(ent);
+		
+		ent = new Entity();
+		ent.setRender(new PlainRender(ent, "AGDG Logo"));
 		ent.setBody(new PlainBody(ent, new Vector3f(-16f, -16f, 0f), 32, 32));
+		ent.setController(new PlayerController(ent));
 		//ent.addComponent(AutorunInteraction.class, new AutorunInteraction(ent, new Script(ent, "Butts")));
 		entities.add(ent);
 		
 		ent = new Entity();
 		ent.setRender(new PlainRender(ent, "AGDG Logo"));
 		ent.setBody(new PlainBody(ent, new Vector3f(0f, 0f, 0f), 32, 32));
-		ent.setController(new PlayerController(ent));
+		
 		//ent.addComponent(AutorunInteraction.class, new AutorunInteraction(ent, new Script(ent, "Butts")));
 		entities.add(ent);
 		
