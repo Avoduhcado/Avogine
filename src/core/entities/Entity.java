@@ -36,10 +36,6 @@ public class Entity implements Comparable<Entity>, Serializable {
 		if(controllable()) {
 			controller.control();
 		}
-		
-		if(hasBody()) {
-			body.update();
-		}
 	}
 	
 	/**
@@ -65,11 +61,21 @@ public class Entity implements Comparable<Entity>, Serializable {
 
 	public void fireEvent(EntityEvent event) {
 		if(event instanceof BodyEvent) {
-			if(hasBody()) {
-				body.processEvent((BodyEvent) event);
-			}
+			processBodyEvent((BodyEvent) event);
 		} else if(event instanceof InteractEvent) {
 			processInteractEvent((InteractEvent) event);
+		}
+	}
+	
+	protected void processBodyEvent(BodyEvent e) {
+		if(!hasBody()) {
+			return;
+		}
+		
+		switch(e.getType()) {
+		case BodyEvent.MOVE:
+			body.move(e);
+			break;
 		}
 	}
 	

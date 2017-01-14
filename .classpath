@@ -3,8 +3,16 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="lib" path="lib/jogg-0.0.7.jar"/>
 	<classpathentry kind="lib" path="lib/jorbis-0.0.15.jar"/>
-	<classpathentry kind="lib" path="lib/lwjgl_util.jar" sourcepath="G:/Users/Dominus/Documents/My Completed Downloads/Coding Stuff/lwjgl-source-2.9.1.zip"/>
-	<classpathentry kind="lib" path="lib/lwjgl.jar" sourcepath="G:/Users/Dominus/Documents/My Completed Downloads/Coding Stuff/lwjgl-source-2.9.1.zip"/>
+	<classpathentry kind="lib" path="lib/lwjgl_util.jar" sourcepath="G:/Users/Dominus/Documents/My Completed Downloads/Coding Stuff/lwjgl-source-2.9.1.zip">
+		<attributes>
+			<attribute name="javadoc_location" value="http://legacy.lwjgl.org/javadoc.html"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="lib/lwjgl.jar" sourcepath="G:/Users/Dominus/Documents/My Completed Downloads/Coding Stuff/lwjgl-source-2.9.1.zip">
+		<attributes>
+			<attribute name="javadoc_location" value="http://legacy.lwjgl.org/javadoc.html"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="lib/slick-util.jar" sourcepath="G:/Users/Dominus/Documents/My Completed Downloads/Coding Stuff/slick-util/lib/slick-util-src.zip"/>
 	<classpathentry kind="lib" path="lib/gson-2.7.jar" sourcepath="G:/Users/Dominus/Documents/My Completed Downloads/Coding Stuff/gson/gson-2.7-sources.jar">
