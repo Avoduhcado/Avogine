@@ -8,7 +8,9 @@ import org.lwjgl.util.vector.Vector4f;
 import core.Camera;
 import core.entities.Entity;
 import core.entities.bodies.PlainBody;
+import core.entities.bodies.RigidBody;
 import core.entities.controllers.PlayerController;
+import core.entities.events.ImpulseEvent;
 import core.entities.renders.PlainRender;
 import core.physics.world.World;
 import core.render.DrawUtils;
@@ -22,33 +24,39 @@ public class Stage extends GameSetup {
 			
 	private boolean pause;
 	
-	private World world = new World();
+	private World world;
 	
 	private ArrayList<Entity> entities = new ArrayList<Entity>();
 	
 	private KeybindListener keybindListener = new StageKeybindListener();
 	
 	public Stage() {
+		
+		world = new World();
 		Entity ent = new Entity();
 		ent.setRender(new PlainRender(ent, "AGDG Logo"));
-		ent.setBody(new PlainBody(ent, new Vector3f(-32f, -32f, 0f), 32, 32));
-		ent.setController(new PlayerController(ent));
-		//ent.addComponent(AutorunInteraction.class, new AutorunInteraction(ent, new Script(ent, "Butts")));
+		ent.setBody(new RigidBody(ent, new Vector3f(-432f, -32f, 0f), 32, 32));
 		entities.add(ent);
+		world.addBody(ent.getBody());
 		
 		ent = new Entity();
 		ent.setRender(new PlainRender(ent, "AGDG Logo"));
-		ent.setBody(new PlainBody(ent, new Vector3f(-16f, -16f, 0f), 32, 32));
-		ent.setController(new PlayerController(ent));
-		//ent.addComponent(AutorunInteraction.class, new AutorunInteraction(ent, new Script(ent, "Butts")));
+		ent.setBody(new RigidBody(ent, new Vector3f(-416f, -16f, 0f), 32, 32));
 		entities.add(ent);
+		ent.fireEvent(new ImpulseEvent(new Vector3f(200,-200,0)));
+		world.addBody(ent.getBody());
 		
 		ent = new Entity();
 		ent.setRender(new PlainRender(ent, "AGDG Logo"));
+		ent.setBody(new RigidBody(ent, new Vector3f(-400f, 0f, 0f), 32, 32));
+		entities.add(ent);
+		world.addBody(ent.getBody());
+		
+		ent = new Entity();
 		ent.setBody(new PlainBody(ent, new Vector3f(0f, 0f, 0f), 32, 32));
-		
-		//ent.addComponent(AutorunInteraction.class, new AutorunInteraction(ent, new Script(ent, "Butts")));
 		entities.add(ent);
+		
+		world.setGravity(100);
 		
 		Camera.get().setFocus(ent.getBody());
 		
@@ -60,7 +68,8 @@ public class Stage extends GameSetup {
 		if(pause) {
 			return;
 		}
-		entities.stream().forEach(Entity::update);
+		world.update();
+		entities.stream().sorted().forEach(Entity::update);
 	}
 
 	@Override
