@@ -57,6 +57,14 @@ public class Transform {
 	public void setY(double y) {
 		this.y = y;
 	}
+
+	public void setHeight(double height) {
+		this.height = height;
+	}
+	
+	public void setWidth(double width) {
+		this.width = width;
+	}
 	
 	public float getRotation() {
 		return rotation;

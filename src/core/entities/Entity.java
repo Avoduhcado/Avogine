@@ -46,7 +46,7 @@ public class Entity implements Comparable<Entity>, Serializable {
 	 */
 	public void draw() {
 		if(renderable()) {
-			render.draw(getBodyPosition());
+			render.draw(getBodyPosition(), getBodyWidth(), getBodyHeight() );
 		}
 	}
 
@@ -78,12 +78,6 @@ public class Entity implements Comparable<Entity>, Serializable {
 		switch(e.getType()) {
 		case BodyEvent.MOVE:
 			body.move(e);
-			break;
-		case BodyEvent.FORCE:
-			body.force(e);
-			break;
-		case BodyEvent.IMPULSE:
-			body.impulse(e);
 			break;
 		}
 	}
@@ -127,6 +121,14 @@ public class Entity implements Comparable<Entity>, Serializable {
 			return body.getPosition();
 		}
 		return new Vector3f();
+	}
+	
+	private double getBodyHeight() {
+		return body.getHeight();
+	}
+	
+	private double getBodyWidth() {
+		return body.getWidth();
 	}
 	
 	public boolean renderable() {

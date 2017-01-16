@@ -37,24 +37,30 @@ public class Stage extends GameSetup {
 		
 		Entity ent = new Entity();
 		ent.setRender(new PlainRender(ent, "AGDG Logo"));
-		ent.setBody(new RigidBody(ent, new Vector3f(-432f, -32f, 0f), 32, 32));
+		ent.setBody(world.addBody(ent, new Vector3f(-432f, -32f, 0f), 32, 32));
 		entities.add(ent);
-		ent.fireEvent(new BodyEvent(BodyEvent.IMPULSE, new Vector3f(350,-350,0)));
-		world.addBody(ent.getBody());
+		((RigidBody)ent.getBody()).impulse(new BodyEvent(BodyEvent.IMPULSE, new Vector3f(350,-350,0)));
+		
 		
 		ent = new Entity();
 		ent.setRender(new PlainRender(ent, "AGDG Logo"));
-		ent.setBody(new RigidBody(ent, new Vector3f(-416f, -16f, 0f), 32, 32));
+		ent.setBody(world.addBody(ent, new Vector3f(-416f, -16f, 0f), 32, 32));
 		entities.add(ent);
-		ent.fireEvent(new BodyEvent(BodyEvent.IMPULSE, new Vector3f(350,-400,0)));
-		world.addBody(ent.getBody());
+		((RigidBody)ent.getBody()).impulse(new BodyEvent(BodyEvent.IMPULSE, new Vector3f(350,-400,0)));
+		
 		
 		ent = new Entity();
 		ent.setRender(new PlainRender(ent, "AGDG Logo"));
-		ent.setBody(new RigidBody(ent, new Vector3f(-400f, 0f, 0f), 32, 32));
+		ent.setBody(world.addBody(ent, new Vector3f(-400, 0f, 0f), 32, 32));
 		entities.add(ent);
-		ent.fireEvent(new BodyEvent(BodyEvent.IMPULSE, new Vector3f(350,-300,0)));
-		world.addBody(ent.getBody());
+		((RigidBody)ent.getBody()).impulse(new BodyEvent(BodyEvent.IMPULSE, new Vector3f(350,-300,0)));
+		
+		
+		ent = new Entity();
+		ent.setRender(new PlainRender(ent, "AGDG Logo"));
+		ent.setBody(world.addBody(ent, new Vector3f(40f, 0f, 0f), 600, 20));
+		entities.add(ent);
+		((RigidBody)ent.getBody()).disableGravity();
 		
 		ent = new Entity();
 		ent.setBody(new PlainBody(ent, new Vector3f(0f, 0f, 0f), 32, 32));

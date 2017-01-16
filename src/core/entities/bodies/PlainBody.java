@@ -36,15 +36,7 @@ public class PlainBody extends Body {
 		Vector3f.add(position, e.getMovement(), position);
 	}
 
-	@Override
-	public void force(BodyEvent e) {
-	}
-
-	@Override
-	public void impulse(BodyEvent e) {
-	}
-
-	public float getWidth() {
+	public double getWidth() {
 		return width;
 	}
 
@@ -52,7 +44,7 @@ public class PlainBody extends Body {
 		this.width = width;
 	}
 
-	public float getHeight() {
+	public double getHeight() {
 		return height;
 	}
 

@@ -16,5 +16,7 @@ public abstract class Body extends EntityComponent implements BodyEventListener 
 	
 	public abstract Vector3f getPosition();
 	public abstract Vector3f getCenter();
+	public abstract double getWidth();
+	public abstract double getHeight();
 	
 }

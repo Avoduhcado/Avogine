@@ -23,9 +23,11 @@ public class PlainRender extends Render {
 	}
 	
 	@Override
-	public void draw(Vector3f position) {
+	public void draw(Vector3f position, double width, double height) {
 		transform.setX(position.x);
 		transform.setY(position.y);
+		transform.setHeight(height);
+		transform.setWidth(width);
 		SpriteList.get(sprite).draw(transform);
 		
 		if(Theater.debug) {

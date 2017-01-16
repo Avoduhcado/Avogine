@@ -4,9 +4,12 @@ import java.util.ArrayList;
 
 import org.lwjgl.util.vector.Vector3f;
 
+import core.entities.Entity;
 import core.entities.bodies.Body;
 import core.entities.bodies.RigidBody;
 import core.entities.events.BodyEvent;
+import core.physics.colliders.BoxCollider;
+import core.physics.colliders.Collider;
 
 public class World {
 	
@@ -14,28 +17,29 @@ public class World {
 	float dragMag; //magnitude of air resistance
 	BodyEvent gravity; //gravity forceEvent
 	
-	ArrayList<Body> bodies;
+	ArrayList<RigidBody> bodies;
 	
 	public World() {
 		gravityMag = 0;
 		dragMag = 0;
 		gravity = new BodyEvent(BodyEvent.FORCE, new Vector3f(0, gravityMag, 0)); 
-		bodies = new ArrayList<Body>();
+		bodies = new ArrayList<RigidBody>();
 	}
 	
-	public World(ArrayList<Body> bodies) {
-		gravityMag = 0;
-		dragMag = 0;
-		gravity = new BodyEvent(BodyEvent.FORCE, new Vector3f(0, gravityMag, 0));
-		this.bodies = bodies;
-	}
+
 	
-	public void addBody(Body body) {
+	public RigidBody addBody(Entity entity, Vector3f position, float width, float height) {
+		RigidBody body = new RigidBody(entity, position, new BoxCollider(position, width, height));
 		bodies.add(body);
+		return body;
 	}
 	
 	public void update() {
-		bodies.stream().forEach(Body -> Body.force(gravity));
+		bodies.stream()
+			.filter(Body -> Body.gravityEnabled())
+			.forEach(Body -> Body.force(gravity));
+		checkCollisions();
+		
 		//bodies.stream().forEach(Body::update);
 	}
 
@@ -50,5 +54,25 @@ public class World {
 	
 	private BodyEvent airResistance(RigidBody body) {
 		return new BodyEvent(BodyEvent.FORCE, (Vector3f) new Vector3f(body.getVelocity()).scale(dragMag) );
+	}
+	
+	private void checkCollisions() {
+		for(int i=0; i < bodies.size(); i++) {
+			for(int j=0; j < bodies.size(); j++) {
+				if( hasCollision(bodies.get(i).getCollider(), bodies.get(j).getCollider()) ) {
+					bodies.get(i).impulse(collision(bodies.get(i).getCollider(), bodies.get(j).getCollider()));
+				}
+			}
+		}
+	}
+	
+	private BodyEvent collision(Collider bodyOne, Collider bodyTwo) {
+		
+		return bodyOne.buildCollision(bodyTwo);
+	}
+	
+	private boolean hasCollision(Collider bodyOne, Collider bodyTwo) {
+		
+		return false;
 	}
 }

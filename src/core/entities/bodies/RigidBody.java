@@ -1,34 +1,34 @@
 package core.entities.bodies;
 
+import java.awt.Rectangle;
+import java.awt.Shape;
+import java.awt.geom.Rectangle2D;
+
 import org.lwjgl.util.vector.Vector3f;
 
 import core.Theater;
 import core.entities.Entity;
 import core.entities.events.BodyEvent;
+import core.entities.listeners.RigidBodyEventListener;
+import core.physics.colliders.Collider;
 
-public class RigidBody extends Body {
+public class RigidBody extends Body implements RigidBodyEventListener{
 	private Vector3f position;
 	private Vector3f velocity;
 	private Vector3f acceleration;
-	private float width, height;
 	private float mass;
+	private Collider collider;
+	private boolean gravityEnabled;
+
 	
-	public RigidBody(Entity entity, float width, float height) {
+	public RigidBody(Entity entity, Vector3f position, Collider collider) {
 		super(entity);
-		this.position = new Vector3f();
+		this.position = position;
 		this.velocity = new Vector3f();
 		this.acceleration = new Vector3f();
-		setWidth(width);
-		setHeight(height);
-	}
-	
-	public RigidBody(Entity entity, Vector3f vec, float width, float height) {
-		super(entity);
-		this.position = vec;
-		this.velocity = new Vector3f();
-		this.acceleration = new Vector3f();
-		setWidth(width);
-		setHeight(height);
+		this.mass = 0;
+		this.collider = collider;
+		this.gravityEnabled = true;
 	}
 	
 	public void update() {
@@ -52,23 +52,7 @@ public class RigidBody extends Body {
 	
 	@Override
 	public Vector3f getCenter() {
-		return Vector3f.add(position, new Vector3f(width * 0.5f, height * 0.5f, 0), null);
-	}
-
-	public float getWidth() {
-		return width;
-	}
-
-	public void setWidth(float width) {
-		this.width = width;
-	}
-
-	public float getHeight() {
-		return height;
-	}
-
-	public void setHeight(float height) {
-		this.height = height;
+		return collider.getCenter();
 	}
 
 	@Override
@@ -85,5 +69,31 @@ public class RigidBody extends Body {
 	@Override
 	public void impulse(BodyEvent e) {
 		Vector3f.add(velocity, e.getMovement(), velocity);
+	}
+	
+	public void disableGravity() {
+		gravityEnabled = false;
+	}
+	public void enableGravity() {
+		gravityEnabled = true;
+	}
+	
+	public boolean gravityEnabled() {
+		return gravityEnabled;
+	}
+
+	@Override
+	public double getWidth() {
+		return collider.getWidth();
+	}
+
+	@Override
+	public double getHeight() {
+		// TODO Auto-generated method stub
+		return collider.getHeight();
+	}
+	
+	public Collider getCollider() {
+		return collider;
 	}
 }

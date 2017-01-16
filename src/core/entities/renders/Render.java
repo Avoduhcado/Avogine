@@ -11,6 +11,6 @@ public abstract class Render extends EntityComponent {
 		super(entity);
 	}
 
-	public abstract void draw(Vector3f position);
+	public abstract void draw(Vector3f position, double width, double height);
 
 }
