@@ -13,6 +13,7 @@ import core.entities.components.interactions.Interaction;
 import core.entities.components.interactions.TouchInteraction;
 import core.entities.controllers.Controller;
 import core.entities.events.BodyEvent;
+import core.entities.events.ControllerEvent;
 import core.entities.events.EntityEvent;
 import core.entities.events.InteractEvent;
 import core.entities.renders.Render;
@@ -29,16 +30,6 @@ public class Entity implements Comparable<Entity>, Serializable {
 	private HashMap<Class<? extends EntityComponent>, EntityComponent> components = new HashMap<Class<? extends EntityComponent>, EntityComponent>();
 
 	/**
-	 * Poll entity's controller for updates. <br>
-	 * Process any changes on entity's body.
-	 */
-	public void update() {
-		if(controllable()) {
-			controller.control();
-		}
-	}
-	
-	/**
 	 * Draw the entity's render on the screen defined by the body's position.
 	 */
 	public void draw() {
@@ -50,20 +41,30 @@ public class Entity implements Comparable<Entity>, Serializable {
 	@Override
 	public int compareTo(Entity other) {
 		if(hasBody() && other.hasBody()) {
-			if(getBodyPosition().getY() >= other.getBodyPosition().getY()) {
-				return 1;
-			} else {
-				return -1;
-			}
+			return (int) (getBodyPosition().getY() - other.getBodyPosition().getY());
 		}
 		return 0;
 	}
 
 	public void fireEvent(EntityEvent event) {
-		if(event instanceof BodyEvent) {
+		if(event instanceof ControllerEvent) {
+			processControllerEvent((ControllerEvent) event);
+		} else if(event instanceof BodyEvent) {
 			processBodyEvent((BodyEvent) event);
 		} else if(event instanceof InteractEvent) {
 			processInteractEvent((InteractEvent) event);
+		}
+	}
+	
+	protected void processControllerEvent(ControllerEvent e) {
+		if(!controllable()) {
+			return;
+		}
+		
+		switch(e.getType()) {
+		case ControllerEvent.MOVE_RIGHT | ControllerEvent.MOVE_LEFT | ControllerEvent.MOVE_UP | ControllerEvent.MOVE_DOWN:
+			controller.movement(e);
+			break;
 		}
 	}
 	

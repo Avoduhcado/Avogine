@@ -49,7 +49,6 @@ public class Stage extends GameSetup {
 		if(pause) {
 			return;
 		}
-		entities.stream().forEach(Entity::update);
 	}
 
 	@Override
@@ -100,8 +99,8 @@ public class Stage extends GameSetup {
 				break;
 			default:
 				entities.stream()
-				.filter(ent -> ent.controllable() && ent.getController() instanceof PlayerController)
-				.forEach(ent -> ent.getController().control(e));
+				.filter(ent -> ent.controllable())
+				.forEach(ent -> ent.getController().keybindClicked(e));
 				break;
 			}
 		}

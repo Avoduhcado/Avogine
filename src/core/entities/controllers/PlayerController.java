@@ -4,6 +4,7 @@ import org.lwjgl.util.vector.Vector3f;
 
 import core.entities.Entity;
 import core.entities.events.BodyEvent;
+import core.entities.events.ControllerEvent;
 import core.ui.event.KeybindEvent;
 import core.utilities.keyboard.Keybind;
 
@@ -22,33 +23,52 @@ public class PlayerController extends Controller {
 	}
 	
 	@Override
-	public void control() {
-	}
-	
-	public void control(KeybindEvent e) {
-		if(e.getKeybind().matches(Keybind.RIGHT, Keybind.LEFT, Keybind.UP, Keybind.DOWN)) {
-			// Reset movement speed
-			speedModifier = 1f;
-			// Basic "run" actions
-			// Modify the entity's movement speed by 150%
-			if(Keybind.RUN.held()) {
-				speedModifier = 1.5f;
-			}
-			
-			// Fire a movement event on the player for whichever movement key presses have occurred
-			entity.fireEvent(new BodyEvent(BodyEvent.MOVE, (Vector3f) new Vector3f(
-					e.getKeybind().equals(Keybind.RIGHT) ? 1f : e.getKeybind().equals(Keybind.LEFT) ? -1f : 0f,
-					e.getKeybind().equals(Keybind.UP) ? -1f : e.getKeybind().equals(Keybind.DOWN) ? 1f : 0f, 0f)
-						.scale(speed * speedModifier)));
+	public void movement(ControllerEvent e) {
+		// Reset movement speed
+		speedModifier = 1f;
+		// Basic "run" actions
+		// Modify the entity's movement speed by 150%
+		if(Keybind.RUN.held()) {
+			speedModifier = 1.5f;
 		}
+
+		// Fire a movement event on the player for whichever movement key presses have occurred
+		entity.fireEvent(new BodyEvent(BodyEvent.MOVE, (Vector3f) new Vector3f(
+				e.getType() == ControllerEvent.MOVE_RIGHT ? 1f : e.getType() == ControllerEvent.MOVE_LEFT ? -1f : 0f,
+				e.getType() == ControllerEvent.MOVE_UP ? -1f : e.getType() == ControllerEvent.MOVE_DOWN ? 1f : 0f, 0f)
+					.scale(speed * speedModifier)));
 	}
-	
+
 	public float getSpeed() {
 		return speed;
 	}
 	
 	public void setSpeed(float speed) {
 		this.speed = speed;
+	}
+
+	@Override
+	public void keybindClicked(KeybindEvent e) {
+		switch(e.getKeybind()) {
+		case RIGHT:
+			movement(new ControllerEvent(ControllerEvent.MOVE_RIGHT));
+			e.consume();
+			break;
+		case LEFT:
+			movement(new ControllerEvent(ControllerEvent.MOVE_LEFT));
+			e.consume();
+			break;
+		case UP:
+			movement(new ControllerEvent(ControllerEvent.MOVE_UP));
+			e.consume();
+			break;
+		case DOWN:
+			movement(new ControllerEvent(ControllerEvent.MOVE_DOWN));
+			e.consume();
+			break;
+		default:
+			break;
+		}
 	}
 
 }
