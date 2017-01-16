@@ -65,10 +65,13 @@ public class Stage extends GameSetup {
 		ent = new Entity();
 		ent.setBody(new PlainBody(ent, new Vector3f(0f, 0f, 0f), 32, 32));
 		entities.add(ent);
-		
-		
-		
 		Camera.get().setFocus(ent.getBody());
+		
+		ent = new Entity();
+		ent.setRender(new PlainRender(ent, "AGDG Logo"));
+		entities.add(ent);
+		
+		
 		
 		Camera.get().setClear(new Vector4f(0f, 0f, 0f, 1f));
 	}

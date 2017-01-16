@@ -46,7 +46,12 @@ public class Entity implements Comparable<Entity>, Serializable {
 	 */
 	public void draw() {
 		if(renderable()) {
-			render.draw(getBodyPosition(), getBodyWidth(), getBodyHeight() );
+			if(hasBody()) {
+				render.draw(getBodyPosition(), getBodyWidth(), getBodyHeight() );
+			} else {
+				render.draw(new Vector3f(), 0, 0);
+			}
+			
 		}
 	}
 
@@ -124,7 +129,10 @@ public class Entity implements Comparable<Entity>, Serializable {
 	}
 	
 	private double getBodyHeight() {
-		return body.getHeight();
+		if(hasBody()) {
+			return body.getHeight();
+		}
+		return 0;
 	}
 	
 	private double getBodyWidth() {
