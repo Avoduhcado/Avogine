@@ -7,7 +7,7 @@ import org.lwjgl.util.vector.Vector4f;
 import org.newdawn.slick.opengl.Texture;
 
 import core.render.SpriteList;
-import core.render.transform.Transform;
+import core.render.Transform;
 import core.utilities.text.GameFont;
 import core.utilities.text.TextModifier;
 
@@ -46,10 +46,9 @@ public class Glyph {
 
 	private void setTransform(double x, double y, TextModifier modifier) {
 		setScale(modifier.getSize());
-		transform.setX(x + getXOffset());
-		transform.setY(y + getYOffset());
-		transform.width = getWidth();
-		transform.height = getHeight();
+		transform.setPosition(x + getXOffset(), y + getYOffset());
+		transform.setSize(width, height);
+		transform.setScale(scale.x, scale.y);
 				
 		transform.setColor(color);
 	}

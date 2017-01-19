@@ -6,7 +6,7 @@ import org.lwjgl.util.vector.Vector4f;
 import org.newdawn.slick.opengl.Texture;
 
 import core.render.SpriteList;
-import core.render.transform.Transform;
+import core.render.Transform;
 
 public class UIFrame {
 	
@@ -31,48 +31,48 @@ public class UIFrame {
 	private void setTransform(int row, int col, Rectangle2D box) {
 		Texture texture = SpriteList.get(frame).getTexture();
 		transform.clear();
-		transform.textureOffsets = new Vector4f();
-		transform.color = new Vector4f(1f, 1f, 1f, opacity);
+		transform.setTextureOffsets(new Vector4f());
+		transform.setColor(new Vector4f(1f, 1f, 1f, opacity));
 		
 		switch(row) {
 		case 0:
-			transform.y = box.getY() - (frameSize / 3);
-			transform.height = frameSize / 3;
-			transform.textureOffsets.y = 0;
-			transform.textureOffsets.w = (texture.getHeight() / 3f);
+			transform.getPosition().setY((float) (box.getY() - (frameSize / 3)));
+			transform.getSize().setY((float) (frameSize / 3));
+			transform.getTextureOffsets().y = 0;
+			transform.getTextureOffsets().w = (texture.getHeight() / 3f);
 			break;
 		case 1:
-			transform.y = box.getY();
-			transform.height = box.getHeight();
-			transform.textureOffsets.y = (texture.getHeight() / 3f);
-			transform.textureOffsets.w = (texture.getHeight() * 0.667f);
+			transform.getPosition().setY((float) box.getY());
+			transform.getSize().setY((float) box.getHeight());
+			transform.getTextureOffsets().y = (texture.getHeight() / 3f);
+			transform.getTextureOffsets().w = (texture.getHeight() * 0.667f);
 			break;
 		case 2:
-			transform.y = box.getMaxY();
-			transform.height = frameSize / 3;
-			transform.textureOffsets.y = (texture.getHeight() * 0.667f);
-			transform.textureOffsets.w = (texture.getHeight());
+			transform.getPosition().setY((float) box.getMaxY());
+			transform.getSize().setY((float) (frameSize / 3));
+			transform.getTextureOffsets().y = (texture.getHeight() * 0.667f);
+			transform.getTextureOffsets().w = (texture.getHeight());
 			break;
 		}
 		
 		switch(col) {
 		case 0:
-			transform.x = box.getX() - (frameSize / 3);
-			transform.width = frameSize / 3;
-			transform.textureOffsets.x = 0;
-			transform.textureOffsets.z = (texture.getWidth() / 3f);
+			transform.getPosition().setX((float) (box.getX() - (frameSize / 3)));
+			transform.getSize().setX((float) (frameSize / 3));
+			transform.getTextureOffsets().x = 0;
+			transform.getTextureOffsets().z = (texture.getWidth() / 3f);
 			break;
 		case 1:
-			transform.x = box.getX();
-			transform.width = box.getWidth();
-			transform.textureOffsets.x = (texture.getWidth() / 3f);
-			transform.textureOffsets.z = (texture.getWidth() * 0.667f);
+			transform.getPosition().setX((float) box.getX());
+			transform.getSize().setX((float) box.getWidth());
+			transform.getTextureOffsets().x = (texture.getWidth() / 3f);
+			transform.getTextureOffsets().z = (texture.getWidth() * 0.667f);
 			break;
 		case 2:
-			transform.x = box.getMaxX();
-			transform.width = frameSize / 3;
-			transform.textureOffsets.x = (texture.getWidth() * 0.667f);
-			transform.textureOffsets.z = (texture.getWidth());
+			transform.getPosition().setX((float) box.getMaxX());
+			transform.getSize().setX((float) (frameSize / 3));
+			transform.getTextureOffsets().x = (texture.getWidth() * 0.667f);
+			transform.getTextureOffsets().z = (texture.getWidth());
 			break;
 		}
 	}

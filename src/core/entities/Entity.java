@@ -6,6 +6,7 @@ import java.util.HashMap;
 import org.lwjgl.util.vector.Vector3f;
 
 import core.entities.bodies.Body;
+import core.entities.bodies.PlainBody;
 import core.entities.components.EntityComponent;
 import core.entities.components.interactions.ActivateInteraction;
 import core.entities.components.interactions.AutorunInteraction;
@@ -17,6 +18,7 @@ import core.entities.events.ControllerEvent;
 import core.entities.events.EntityEvent;
 import core.entities.events.InteractEvent;
 import core.entities.renders.Render;
+import core.render.Transform;
 
 public class Entity implements Comparable<Entity>, Serializable {
 	private static final long serialVersionUID = 1L;
@@ -26,7 +28,7 @@ public class Entity implements Comparable<Entity>, Serializable {
 	private Body body;
 	private Render render;
 	private Controller controller;
-	
+		
 	private HashMap<Class<? extends EntityComponent>, EntityComponent> components = new HashMap<Class<? extends EntityComponent>, EntityComponent>();
 
 	/**
@@ -34,13 +36,14 @@ public class Entity implements Comparable<Entity>, Serializable {
 	 */
 	public void draw() {
 		if(renderable()) {
-			render.draw(getBodyPosition());
+			render.draw(constructTransform());
 		}
 	}
 
 	@Override
 	public int compareTo(Entity other) {
 		if(hasBody() && other.hasBody()) {
+			// Add in width/height by default and then compute this from the bottom y, duh
 			return (int) (getBodyPosition().getY() - other.getBodyPosition().getY());
 		}
 		return 0;
@@ -102,6 +105,21 @@ public class Entity implements Comparable<Entity>, Serializable {
 		}
 	}
 	
+	private Transform constructTransform() {
+		Transform transform = new Transform();
+		
+		if(hasBody()) {
+			transform.setPosition(body.getPosition());
+			if(body instanceof PlainBody) {
+				transform.setSize(((PlainBody) body).getWidth(), ((PlainBody) body).getHeight());
+			}
+		}
+		
+		components.values().stream().forEach(e -> e.applyTransformEffect(transform));
+		
+		return transform;
+	}
+	
 	public boolean hasBody() {
 		return body != null;
 	}
@@ -153,19 +171,23 @@ public class Entity implements Comparable<Entity>, Serializable {
 		this.components = components;
 	}
 	
-	public EntityComponent getComponent(Class<? extends EntityComponent> clazz) {
+	public <T extends EntityComponent> T getComponent(Class<T> clazz) {
 		if(components.containsKey(clazz)) {
-			return components.get(clazz);
+			return clazz.cast(components.get(clazz));
 		}
 		return null;
+	}
+	
+	public boolean hasComponent(Class<? extends EntityComponent> clazz) {
+		return components.containsKey(clazz);
 	}
 	
 	public void addComponent(Class<? extends EntityComponent> clazz, EntityComponent component) {
 		components.put(clazz, component);
 	}
 	
-	public EntityComponent removeComponent(Class<? extends EntityComponent> clazz) {
-		return components.remove(clazz);
+	public <T extends EntityComponent> T removeComponent(Class<T> clazz) {
+		return clazz.cast(components.remove(clazz));
 	}
 
 	@Override

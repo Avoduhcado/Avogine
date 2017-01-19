@@ -1,7 +1,7 @@
 package core.ui;
 
 import core.render.SpriteList;
-import core.render.transform.Transform;
+import core.render.Transform;
 import core.ui.event.MouseEvent;
 import core.ui.event.MouseListener;
 import core.ui.event.MouseMotionListener;
@@ -70,11 +70,10 @@ public class Slider extends UIElement implements Accessible {
 	
 	private void setTransform(boolean slide) {
 		if(slide) {
-			slideTransform.x = getBounds().getX();
-			slideTransform.y = getBounds().getY();
+			slideTransform.setPosition(getBounds().getX(), getBounds().getY());
 		} else {
-			slideTransform.x = (getBounds().getX() + (getBounds().getWidth() * value) - (SpriteList.get(sliderKnob).getWidth() / 2f));
-			slideTransform.y = getBounds().getY();
+			slideTransform.setPosition((getBounds().getX() + (getBounds().getWidth() * value) - (SpriteList.get(sliderKnob).getWidth() / 2f)),
+					getBounds().getY());
 		}
 	}
 	

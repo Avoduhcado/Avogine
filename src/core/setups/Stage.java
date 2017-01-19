@@ -28,7 +28,7 @@ public class Stage extends GameSetup {
 	public Stage() {
 		Entity ent = new Entity();
 		ent.setRender(new PlainRender(ent, "AGDG Logo"));
-		ent.setBody(new PlainBody(ent, new Vector3f(-16f, -16f, 0f), 32, 32));
+		ent.setBody(new PlainBody(ent, new Vector3f(-16f, -16f, 0f), 256, 256));
 		//ent.addComponent(AutorunInteraction.class, new AutorunInteraction(ent, new Script(ent, "Butts")));
 		entities.add(ent);
 		
@@ -38,6 +38,14 @@ public class Stage extends GameSetup {
 		ent.setController(new PlayerController(ent));
 		//ent.addComponent(AutorunInteraction.class, new AutorunInteraction(ent, new Script(ent, "Butts")));
 		entities.add(ent);
+		
+		for(int x = 0; x < 100; x++) {
+			ent = new Entity();
+			ent.setRender(new PlainRender(ent, "AGDG Logo"));
+			ent.setBody(new PlainBody(ent, new Vector3f((float) (Math.random() * 100), (float) (Math.random() * 100), 0f), 32, 32));
+			//ent.addComponent(AutorunInteraction.class, new AutorunInteraction(ent, new Script(ent, "Butts")));
+			entities.add(ent);
+		}
 		
 		Camera.get().setFocus(ent.getBody());
 		

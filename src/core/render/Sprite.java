@@ -9,8 +9,6 @@ import org.newdawn.slick.opengl.Texture;
 import org.newdawn.slick.opengl.TextureLoader;
 import org.newdawn.slick.util.ResourceLoader;
 
-import core.render.transform.Transform;
-
 public class Sprite {
 
 	private Texture texture;
@@ -48,23 +46,23 @@ public class Sprite {
 		
 		GL11.glPushMatrix();
 
-		GL11.glTranslated(transform.x, transform.y, 0f);
-		GL11.glScalef(transform.scaleX, transform.scaleY, 0f);
+		GL11.glTranslated(transform.getPosition().x, transform.getPosition().y, 0f);
+		GL11.glScalef(transform.getScale().x, transform.getScale().y, 0f);
 		
-		if(transform.flipX) {
+		if(transform.isFlipX()) {
 			GL11.glRotatef(180f, 0, 1, 0);
 		}
 		
-		if(transform.centerRotate) {
+		if(transform.isCenterRotate()) {
 			GL11.glTranslatef(texture.getImageWidth() / 2f, texture.getImageHeight() / 2f, 0);
 			// Use Math.toDegrees for dope cool spinning effect
-			GL11.glRotated(transform.rotation, 0, 0, 1);
+			GL11.glRotated(transform.getRotation(), 0, 0, 1);
 			GL11.glTranslatef(-texture.getImageWidth() / 2f, -texture.getImageHeight() / 2f, 0);
 		} else {
-			GL11.glRotated(transform.rotation, 0, 0, 1);
+			GL11.glRotated(transform.getRotation(), 0, 0, 1);
 		}
 		
-		GL11.glColor4f(transform.color.x, transform.color.y, transform.color.z, transform.color.w);
+		GL11.glColor4f(transform.getColor().x, transform.getColor().y, transform.getColor().z, transform.getColor().w);
 		
 		GL11.glEnable(GL11.GL_BLEND);
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
@@ -78,18 +76,18 @@ public class Sprite {
 			GL11.glTexCoord2f(texXOffset, texYOffset);
 			GL11.glVertex2d(0, 0);
 			GL11.glTexCoord2f(texWidth, texYOffset);
-			GL11.glVertex2d(transform.width != 0 ? transform.width : getWidth(), 0);
+			GL11.glVertex2d(transform.getSize().x != 0 ? transform.getSize().x : getWidth(), 0);
 			GL11.glTexCoord2f(texWidth, texHeight);
-			GL11.glVertex2d(transform.width != 0 ? transform.width : getWidth(), transform.height != 0 ? transform.height : getHeight());
+			GL11.glVertex2d(transform.getSize().x != 0 ? transform.getSize().x : getWidth(), transform.getSize().y != 0 ? transform.getSize().y : getHeight());
 			GL11.glTexCoord2f(texXOffset, texHeight);
-			GL11.glVertex2d(0, transform.height != 0 ? transform.height : getHeight());
+			GL11.glVertex2d(0, transform.getSize().y != 0 ? transform.getSize().y : getHeight());
 		}
 		GL11.glEnd();
 		GL11.glPopMatrix();
 	}
 	
 	private void updateTextureOffsets(Transform transform) {
-		Vector4f textureOffsets = transform.textureOffsets;
+		Vector4f textureOffsets = transform.getTextureOffsets();
 		if(textureOffsets == null) {
 			texXOffset = 0;
 			texYOffset = 0;
