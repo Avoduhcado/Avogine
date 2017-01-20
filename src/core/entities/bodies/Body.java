@@ -4,9 +4,9 @@ import org.lwjgl.util.vector.Vector3f;
 
 import core.entities.Entity;
 import core.entities.components.EntityComponent;
-import core.entities.listeners.BodyEventListener;
+import core.entities.listeners.BodyListener;
 
-public abstract class Body extends EntityComponent implements BodyEventListener {
+public abstract class Body extends EntityComponent implements BodyListener {
 	
 	public Body(Entity entity) {
 		super(entity);

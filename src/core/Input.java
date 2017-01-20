@@ -13,6 +13,7 @@ import core.render.effects.Tween;
 import core.ui.event.KeyEvent;
 import core.ui.event.KeybindEvent;
 import core.ui.event.MouseEvent;
+import core.ui.event.MouseWheelEvent;
 import core.ui.utils.UIContainer;
 import core.utilities.keyboard.Keybind;
 
@@ -123,8 +124,8 @@ public class Input {
 		}
 		
 		if(Mouse.hasWheel() && Mouse.getDWheel() != 0) {
-			// TODO Implement mouseWheelListener
-			System.out.println(Mouse.getEventDWheel());
+			MouseWheelEvent mwe = new MouseWheelEvent(Mouse.getEventDWheel());
+			setup.fireEvent(mwe);
 		}
 	}
 	

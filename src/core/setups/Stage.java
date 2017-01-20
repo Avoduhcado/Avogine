@@ -13,6 +13,8 @@ import core.entities.renders.PlainRender;
 import core.render.DrawUtils;
 import core.ui.event.KeybindEvent;
 import core.ui.event.KeybindListener;
+import core.ui.event.MouseWheelEvent;
+import core.ui.event.MouseWheelListener;
 import core.ui.overlays.GameMenu;
 import core.utilities.keyboard.Keybind;
 import core.utilities.text.Text;
@@ -24,6 +26,7 @@ public class Stage extends GameSetup {
 	private ArrayList<Entity> entities = new ArrayList<Entity>();
 	
 	private KeybindListener keybindListener = new StageKeybindListener();
+	private MouseWheelListener mouseWheelListener = new StageMouseWheelListener();
 	
 	public Stage() {
 		Entity ent = new Entity();
@@ -74,6 +77,13 @@ public class Stage extends GameSetup {
 			keybindListener.keybindClicked(e);
 		}
 	}
+
+	@Override
+	protected void processMouseWheelEvent(MouseWheelEvent e) {
+		if(mouseWheelListener != null) {
+			mouseWheelListener.wheelScrolled(e);
+		}
+	}
 	
 	private class StageKeybindListener implements KeybindListener {
 		@Override
@@ -103,6 +113,13 @@ public class Stage extends GameSetup {
 				.forEach(ent -> ent.getController().keybindClicked(e));
 				break;
 			}
+		}
+	}
+	
+	private class StageMouseWheelListener implements MouseWheelListener {
+		@Override
+		public void wheelScrolled(MouseWheelEvent e) {
+			Camera.get().setScale(Vector4f.add(Camera.get().getScale(), new Vector4f(e.getScroll() / 1000f, e.getScroll() / 1000f, 0f, 0f), null));
 		}
 	}
 	
