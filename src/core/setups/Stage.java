@@ -28,28 +28,20 @@ public class Stage extends GameSetup {
 	public Stage() {
 		Entity ent = new Entity();
 		ent.setRender(new PlainRender(ent, "AGDG Logo"));
-		ent.setBody(new PlainBody(ent, new Vector3f(-16f, -16f, 0f), 256, 256));
+		ent.setBody(new PlainBody(ent, new Vector3f(-16f, -16f, 0f), new Vector3f(256f, 256f, 0f)));
 		//ent.addComponent(AutorunInteraction.class, new AutorunInteraction(ent, new Script(ent, "Butts")));
 		entities.add(ent);
 		
 		ent = new Entity();
 		ent.setRender(new PlainRender(ent, "AGDG Logo"));
-		ent.setBody(new PlainBody(ent, new Vector3f(0f, 0f, 0f), 32, 32));
+		ent.setBody(new PlainBody(ent, new Vector3f(0f, 0f, 0f), new Vector3f(32f, 32f, 0f)));
 		ent.setController(new PlayerController(ent));
 		//ent.addComponent(AutorunInteraction.class, new AutorunInteraction(ent, new Script(ent, "Butts")));
 		entities.add(ent);
 		
-		for(int x = 0; x < 100; x++) {
-			ent = new Entity();
-			ent.setRender(new PlainRender(ent, "AGDG Logo"));
-			ent.setBody(new PlainBody(ent, new Vector3f((float) (Math.random() * 100), (float) (Math.random() * 100), 0f), 32, 32));
-			//ent.addComponent(AutorunInteraction.class, new AutorunInteraction(ent, new Script(ent, "Butts")));
-			entities.add(ent);
-		}
-		
 		Camera.get().setFocus(ent.getBody());
 		
-		Camera.get().setClear(new Vector4f(1f, 1f, 0f, 1f));
+		Camera.get().setClear(new Vector4f(101f / 255f, 156f / 255f, 239f / 255f, 1f));
 	}
 	
 	@Override

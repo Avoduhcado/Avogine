@@ -3,10 +3,7 @@ package core.entities;
 import java.io.Serializable;
 import java.util.HashMap;
 
-import org.lwjgl.util.vector.Vector3f;
-
 import core.entities.bodies.Body;
-import core.entities.bodies.PlainBody;
 import core.entities.components.EntityComponent;
 import core.entities.components.interactions.ActivateInteraction;
 import core.entities.components.interactions.AutorunInteraction;
@@ -43,8 +40,7 @@ public class Entity implements Comparable<Entity>, Serializable {
 	@Override
 	public int compareTo(Entity other) {
 		if(hasBody() && other.hasBody()) {
-			// Add in width/height by default and then compute this from the bottom y, duh
-			return (int) (getBodyPosition().getY() - other.getBodyPosition().getY());
+			return (int) (body.getBottom().getY() - other.getBody().getBottom().getY());
 		}
 		return 0;
 	}
@@ -110,9 +106,7 @@ public class Entity implements Comparable<Entity>, Serializable {
 		
 		if(hasBody()) {
 			transform.setPosition(body.getPosition());
-			if(body instanceof PlainBody) {
-				transform.setSize(((PlainBody) body).getWidth(), ((PlainBody) body).getHeight());
-			}
+			transform.setSize(body.getSize().x, body.getSize().y);
 		}
 		
 		components.values().stream().forEach(e -> e.applyTransformEffect(transform));
@@ -130,13 +124,6 @@ public class Entity implements Comparable<Entity>, Serializable {
 	
 	public void setBody(Body body) {
 		this.body = body;
-	}
-	
-	private Vector3f getBodyPosition() {
-		if(hasBody()) {
-			return body.getPosition();
-		}
-		return new Vector3f();
 	}
 	
 	public boolean renderable() {
