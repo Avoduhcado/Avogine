@@ -16,6 +16,8 @@ import core.physics.world.World;
 import core.render.DrawUtils;
 import core.ui.event.KeybindEvent;
 import core.ui.event.KeybindListener;
+import core.ui.event.MouseWheelEvent;
+import core.ui.event.MouseWheelListener;
 import core.ui.overlays.GameMenu;
 import core.utilities.keyboard.Keybind;
 import core.utilities.text.Text;
@@ -29,6 +31,7 @@ public class Stage extends GameSetup {
 	private ArrayList<Entity> entities = new ArrayList<Entity>();
 	
 	private KeybindListener keybindListener = new StageKeybindListener();
+	private MouseWheelListener mouseWheelListener = new StageMouseWheelListener();
 	
 	public Stage() {
 		
@@ -37,21 +40,8 @@ public class Stage extends GameSetup {
 		
 		Entity ent = new Entity();
 		ent.setRender(new PlainRender(ent, "AGDG Logo"));
-		ent.setBody(world.addBody(ent, new Vector3f(-432f, -32f, 0f), 32, 32));
-		entities.add(ent);
-		((RigidBody)ent.getBody()).impulse(new BodyEvent(BodyEvent.IMPULSE, new Vector3f(350,-350,0)));
-		
-		
-		ent = new Entity();
-		ent.setRender(new PlainRender(ent, "AGDG Logo"));
-		ent.setBody(world.addBody(ent, new Vector3f(-416f, -16f, 0f), 32, 32));
-		entities.add(ent);
-		((RigidBody)ent.getBody()).impulse(new BodyEvent(BodyEvent.IMPULSE, new Vector3f(350,-400,0)));
-		
-		
-		ent = new Entity();
-		ent.setRender(new PlainRender(ent, "AGDG Logo"));
-		ent.setBody(world.addBody(ent, new Vector3f(-400, 0f, 0f), 32, 32));
+		ent.setBody(new PlainBody(ent, new Vector3f(-16f, -16f, 0f), new Vector3f(256f, 256f, 0f)));
+		//ent.addComponent(AutorunInteraction.class, new AutorunInteraction(ent, new Script(ent, "Butts")));
 		entities.add(ent);
 		((RigidBody)ent.getBody()).impulse(new BodyEvent(BodyEvent.IMPULSE, new Vector3f(350,-300,0)));
 		
@@ -63,7 +53,7 @@ public class Stage extends GameSetup {
 		((RigidBody)ent.getBody()).disableGravity();
 		
 		ent = new Entity();
-		ent.setBody(new PlainBody(ent, new Vector3f(0f, 0f, 0f), 32, 32));
+		ent.setBody(new PlainBody(ent, new Vector3f(0f, 0f, 0f), new Vector3f(32f, 32f, 0f)));
 		entities.add(ent);
 		Camera.get().setFocus(ent.getBody());
 		
@@ -72,8 +62,7 @@ public class Stage extends GameSetup {
 		entities.add(ent);
 		
 		
-		
-		Camera.get().setClear(new Vector4f(0f, 0f, 0f, 1f));
+		Camera.get().setClear(new Vector4f(101f / 255f, 156f / 255f, 239f / 255f, 1f));
 	}
 	
 	@Override
@@ -81,8 +70,6 @@ public class Stage extends GameSetup {
 		if(pause) {
 			return;
 		}
-		world.update();
-		entities.stream().sorted().forEach(Entity::update);
 	}
 
 	@Override
@@ -106,6 +93,13 @@ public class Stage extends GameSetup {
 		
 		if(keybindListener != null) {
 			keybindListener.keybindClicked(e);
+		}
+	}
+
+	@Override
+	protected void processMouseWheelEvent(MouseWheelEvent e) {
+		if(mouseWheelListener != null) {
+			mouseWheelListener.wheelScrolled(e);
 		}
 	}
 	
@@ -133,10 +127,17 @@ public class Stage extends GameSetup {
 				break;
 			default:
 				entities.stream()
-				.filter(ent -> ent.controllable() && ent.getController() instanceof PlayerController)
-				.forEach(ent -> ent.getController().control(e));
+				.filter(ent -> ent.controllable())
+				.forEach(ent -> ent.getController().keybindClicked(e));
 				break;
 			}
+		}
+	}
+	
+	private class StageMouseWheelListener implements MouseWheelListener {
+		@Override
+		public void wheelScrolled(MouseWheelEvent e) {
+			Camera.get().setScale(Vector4f.add(Camera.get().getScale(), new Vector4f(e.getScroll() / 1000f, e.getScroll() / 1000f, 0f, 0f), null));
 		}
 	}
 	

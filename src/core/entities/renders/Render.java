@@ -1,9 +1,8 @@
 package core.entities.renders;
 
-import org.lwjgl.util.vector.Vector3f;
-
 import core.entities.Entity;
 import core.entities.components.EntityComponent;
+import core.render.Transform;
 
 public abstract class Render extends EntityComponent {
 	
@@ -11,6 +10,6 @@ public abstract class Render extends EntityComponent {
 		super(entity);
 	}
 
-	public abstract void draw(Vector3f position, double width, double height);
+	public abstract void draw(Transform transform);
 
 }

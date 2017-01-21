@@ -1,7 +1,7 @@
 package core.ui;
 
 import core.render.SpriteList;
-import core.render.transform.Transform;
+import core.render.Transform;
 import core.utilities.ValueSupplier;
 
 public class Icon extends UIElement {
@@ -16,8 +16,8 @@ public class Icon extends UIElement {
 	
 	@Override
 	public void draw() {
-		transform.x = getBounds().getX();
-		transform.y = getBounds().getY();
+		transform.setPosition(getBounds().getX(), getBounds().getY());
+		transform.setSize(getBounds().getWidth(), getBounds().getHeight());
 		
 		SpriteList.get(image).draw(transform);
 	}

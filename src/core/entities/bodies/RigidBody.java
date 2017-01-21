@@ -81,19 +81,14 @@ public class RigidBody extends Body implements RigidBodyEventListener{
 	public boolean gravityEnabled() {
 		return gravityEnabled;
 	}
-
-	@Override
-	public double getWidth() {
-		return collider.getWidth();
-	}
-
-	@Override
-	public double getHeight() {
-		// TODO Auto-generated method stub
-		return collider.getHeight();
-	}
 	
 	public Collider getCollider() {
 		return collider;
+	}
+
+	@Override
+	public Vector3f getSize() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

@@ -3,8 +3,6 @@ package core.entities;
 import java.io.Serializable;
 import java.util.HashMap;
 
-import org.lwjgl.util.vector.Vector3f;
-
 import core.entities.bodies.Body;
 import core.entities.components.EntityComponent;
 import core.entities.components.interactions.ActivateInteraction;
@@ -13,9 +11,11 @@ import core.entities.components.interactions.Interaction;
 import core.entities.components.interactions.TouchInteraction;
 import core.entities.controllers.Controller;
 import core.entities.events.BodyEvent;
+import core.entities.events.ControllerEvent;
 import core.entities.events.EntityEvent;
 import core.entities.events.InteractEvent;
 import core.entities.renders.Render;
+import core.render.Transform;
 
 public class Entity implements Comparable<Entity>, Serializable {
 	private static final long serialVersionUID = 1L;
@@ -25,53 +25,45 @@ public class Entity implements Comparable<Entity>, Serializable {
 	private Body body;
 	private Render render;
 	private Controller controller;
-	
+		
 	private HashMap<Class<? extends EntityComponent>, EntityComponent> components = new HashMap<Class<? extends EntityComponent>, EntityComponent>();
 
-	/**
-	 * Poll entity's controller for updates. <br>
-	 * Process any changes on entity's body.
-	 */
-	public void update() {
-		if(controllable()) {
-			controller.control();
-		}
-		if(hasBody()) {
-			body.update();
-		}
-	}
-	
 	/**
 	 * Draw the entity's render on the screen defined by the body's position.
 	 */
 	public void draw() {
 		if(renderable()) {
-			if(hasBody()) {
-				render.draw(getBodyPosition(), getBodyWidth(), getBodyHeight() );
-			} else {
-				render.draw(new Vector3f(), 0, 0);
-			}
-			
+			render.draw(constructTransform());
 		}
 	}
 
 	@Override
 	public int compareTo(Entity other) {
 		if(hasBody() && other.hasBody()) {
-			if(getBodyPosition().getY() >= other.getBodyPosition().getY()) {
-				return 1;
-			} else {
-				return -1;
-			}
+			return (int) (body.getBottom().getY() - other.getBody().getBottom().getY());
 		}
 		return 0;
 	}
 
 	public void fireEvent(EntityEvent event) {
-		if(event instanceof BodyEvent) {
+		if(event instanceof ControllerEvent) {
+			processControllerEvent((ControllerEvent) event);
+		} else if(event instanceof BodyEvent) {
 			processBodyEvent((BodyEvent) event);
 		} else if(event instanceof InteractEvent) {
 			processInteractEvent((InteractEvent) event);
+		}
+	}
+	
+	protected void processControllerEvent(ControllerEvent e) {
+		if(!controllable()) {
+			return;
+		}
+		
+		switch(e.getType()) {
+		case ControllerEvent.MOVE_RIGHT | ControllerEvent.MOVE_LEFT | ControllerEvent.MOVE_UP | ControllerEvent.MOVE_DOWN:
+			controller.movement(e);
+			break;
 		}
 	}
 	
@@ -109,6 +101,19 @@ public class Entity implements Comparable<Entity>, Serializable {
 		}
 	}
 	
+	private Transform constructTransform() {
+		Transform transform = new Transform();
+		
+		if(hasBody()) {
+			transform.setPosition(body.getPosition());
+			transform.setSize(body.getSize().x, body.getSize().y);
+		}
+		
+		components.values().stream().forEach(e -> e.applyTransformEffect(transform));
+		
+		return transform;
+	}
+	
 	public boolean hasBody() {
 		return body != null;
 	}
@@ -119,25 +124,7 @@ public class Entity implements Comparable<Entity>, Serializable {
 	
 	public void setBody(Body body) {
 		this.body = body;
-	}
-	
-	private Vector3f getBodyPosition() {
-		if(hasBody()) {
-			return body.getPosition();
-		}
-		return new Vector3f();
-	}
-	
-	private double getBodyHeight() {
-		if(hasBody()) {
-			return body.getHeight();
-		}
-		return 0;
-	}
-	
-	private double getBodyWidth() {
-		return body.getWidth();
-	}
+	}	
 	
 	public boolean renderable() {
 		return render != null;
@@ -171,19 +158,23 @@ public class Entity implements Comparable<Entity>, Serializable {
 		this.components = components;
 	}
 	
-	public EntityComponent getComponent(Class<? extends EntityComponent> clazz) {
+	public <T extends EntityComponent> T getComponent(Class<T> clazz) {
 		if(components.containsKey(clazz)) {
-			return components.get(clazz);
+			return clazz.cast(components.get(clazz));
 		}
 		return null;
+	}
+	
+	public boolean hasComponent(Class<? extends EntityComponent> clazz) {
+		return components.containsKey(clazz);
 	}
 	
 	public void addComponent(Class<? extends EntityComponent> clazz, EntityComponent component) {
 		components.put(clazz, component);
 	}
 	
-	public EntityComponent removeComponent(Class<? extends EntityComponent> clazz) {
-		return components.remove(clazz);
+	public <T extends EntityComponent> T removeComponent(Class<T> clazz) {
+		return clazz.cast(components.remove(clazz));
 	}
 
 	@Override

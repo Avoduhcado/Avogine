@@ -1,6 +1,7 @@
 package core.entities.components;
 
 import core.entities.Entity;
+import core.render.Transform;
 
 public abstract class EntityComponent {
 
@@ -18,6 +19,9 @@ public abstract class EntityComponent {
 		this.entity = entity;
 	}
 	
-	
+	// Optional overridable function to apply component specfic effects to the entity's transform
+	public void applyTransformEffect(Transform transform) {
+		
+	}
 	
 }

@@ -8,6 +8,7 @@ import core.ui.event.KeybindEvent;
 import core.ui.event.MouseAdapter;
 import core.ui.event.MouseEvent;
 import core.ui.event.MouseListener;
+import core.ui.event.MouseWheelEvent;
 import core.ui.event.StateChangeEvent;
 import core.ui.event.StateChangeListener;
 import core.ui.event.TimeEvent;
@@ -149,6 +150,8 @@ public abstract class GameSetup implements UIContainer {
 			processTimeEvent((TimeEvent) e);
 		} else if(e instanceof MouseEvent) {
 			processMouseEvent((MouseEvent) e);
+		} else if(e instanceof MouseWheelEvent) {
+			processMouseWheelEvent((MouseWheelEvent) e);
 		} else if(e instanceof KeyEvent) {
 			processKeyEvent((KeyEvent) e);
 		} else if(e instanceof KeybindEvent) {
@@ -188,6 +191,10 @@ public abstract class GameSetup implements UIContainer {
 				break;
 			}
 		}
+	}
+	
+	protected void processMouseWheelEvent(MouseWheelEvent e) {
+		
 	}
 	
 	protected void processKeyEvent(KeyEvent e) {
