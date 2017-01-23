@@ -12,6 +12,7 @@ import core.entities.bodies.RigidBody;
 import core.entities.controllers.PlayerController;
 import core.entities.events.BodyEvent;
 import core.entities.renders.PlainRender;
+import core.physics.colliders.BoxCollider;
 import core.physics.world.World;
 import core.render.DrawUtils;
 import core.ui.event.KeybindEvent;
@@ -40,17 +41,12 @@ public class Stage extends GameSetup {
 		
 		Entity ent = new Entity();
 		ent.setRender(new PlainRender(ent, "AGDG Logo"));
-		ent.setBody(new PlainBody(ent, new Vector3f(-16f, -16f, 0f), new Vector3f(256f, 256f, 0f)));
+		ent.setBody(world.addBody(ent, new Vector3f(-16f, -16f, 0f), new Vector3f(256f, 256f, 0f)));
 		//ent.addComponent(AutorunInteraction.class, new AutorunInteraction(ent, new Script(ent, "Butts")));
 		entities.add(ent);
 		((RigidBody)ent.getBody()).impulse(new BodyEvent(BodyEvent.IMPULSE, new Vector3f(350,-300,0)));
 		
-		
-		ent = new Entity();
-		ent.setRender(new PlainRender(ent, "AGDG Logo"));
-		ent.setBody(world.addBody(ent, new Vector3f(40f, 0f, 0f), 600, 20));
-		entities.add(ent);
-		((RigidBody)ent.getBody()).disableGravity();
+
 		
 		ent = new Entity();
 		ent.setBody(new PlainBody(ent, new Vector3f(0f, 0f, 0f), new Vector3f(32f, 32f, 0f)));
@@ -69,7 +65,9 @@ public class Stage extends GameSetup {
 	public void update() {
 		if(pause) {
 			return;
-		}
+		} else {
+			world.update();
+		}	
 	}
 
 	@Override

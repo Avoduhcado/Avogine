@@ -6,30 +6,17 @@ import core.entities.events.BodyEvent;
 
 public class BoxCollider extends Collider {
 	
-	float width, height;
+	Vector3f size;
 	
-	public BoxCollider(Vector3f position, float width, float height) {
+	public BoxCollider(Vector3f position, Vector3f size) {
 		super(position);
-		this.width = width;
-		this.height = height;
+		this.size = size;
 	}
 	
 	@Override
 	public Vector3f getCenter() {
 		// TODO Auto-generated method stub
-		return Vector3f.add(position, new Vector3f(width * 0.5f, height * 0.5f, 0), null);
-	}
-
-	@Override
-	public double getWidth() {
-		// TODO Auto-generated method stub
-		return width;
-	}
-
-	@Override
-	public double getHeight() {
-		// TODO Auto-generated method stub
-		return height;
+		return Vector3f.add(position, new Vector3f(size.x * 0.5f, size.y * 0.5f, 0), null);
 	}
 
 	@Override
@@ -43,6 +30,12 @@ public class BoxCollider extends Collider {
 	
 	private BodyEvent buildWallCollision(BoxCollider bodyTwo) {
 		return new BodyEvent(3, (Vector3f)new Vector3f(position).scale(-1));
+	}
+
+	@Override
+	public Vector3f getSize() {
+		// TODO Auto-generated method stub
+		return size;
 	}
 	
 }

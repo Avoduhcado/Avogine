@@ -19,6 +19,7 @@ public class RigidBody extends Body implements RigidBodyEventListener{
 	private float mass;
 	private Collider collider;
 	private boolean gravityEnabled;
+	
 
 	
 	public RigidBody(Entity entity, Vector3f position, Collider collider) {
@@ -29,6 +30,7 @@ public class RigidBody extends Body implements RigidBodyEventListener{
 		this.mass = 0;
 		this.collider = collider;
 		this.gravityEnabled = true;
+		
 	}
 	
 	public void update() {
@@ -89,6 +91,9 @@ public class RigidBody extends Body implements RigidBodyEventListener{
 	@Override
 	public Vector3f getSize() {
 		// TODO Auto-generated method stub
-		return null;
+		if(collider != null) {
+			return collider.getSize();
+		}
+		return new Vector3f();
 	}
 }

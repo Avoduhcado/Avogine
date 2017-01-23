@@ -28,8 +28,8 @@ public class World {
 	
 
 	
-	public RigidBody addBody(Entity entity, Vector3f position, float width, float height) {
-		RigidBody body = new RigidBody(entity, position, new BoxCollider(position, width, height));
+	public RigidBody addBody(Entity entity, Vector3f position, Vector3f size) {
+		RigidBody body = new RigidBody(entity, position, new BoxCollider(position, size));
 		bodies.add(body);
 		return body;
 	}
@@ -38,9 +38,8 @@ public class World {
 		bodies.stream()
 			.filter(Body -> Body.gravityEnabled())
 			.forEach(Body -> Body.force(gravity));
-		checkCollisions();
-		
-		//bodies.stream().forEach(Body::update);
+		//checkCollisions();
+		bodies.stream().forEach(RigidBody::update);
 	}
 
 	public void setGravity(float magnitude) {

@@ -14,8 +14,7 @@ public abstract class Collider {
 	public abstract BodyEvent buildCollision(Collider bodyTwo);
 	
 	public abstract Vector3f getCenter();
-	public abstract double getWidth();
-	public abstract double getHeight();
+	public abstract Vector3f getSize();
 	
 	
 }
