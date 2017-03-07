@@ -5,6 +5,7 @@ import org.lwjgl.util.vector.Vector3f;
 import core.entities.Entity;
 import core.entities.events.BodyEvent;
 import core.entities.events.ControllerEvent;
+import core.entities.events.InteractEvent;
 import core.ui.event.KeybindEvent;
 import core.utilities.keyboard.Keybind;
 
@@ -65,6 +66,12 @@ public class PlayerController extends Controller {
 		case DOWN:
 			movement(new ControllerEvent(ControllerEvent.MOVE_DOWN));
 			e.consume();
+			break;
+		case CONFIRM:
+			if(e.getKeybind().clicked()) {
+				entity.getContainer().fireEvent(new InteractEvent(InteractEvent.INTERACT, entity));
+				e.consume();
+			}
 			break;
 		default:
 			break;

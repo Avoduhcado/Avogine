@@ -2,6 +2,8 @@ package core.setups;
 
 import java.util.ArrayList;
 
+import core.event.AvoEvent;
+import core.setups.utils.UIContainer;
 import core.ui.UIElement;
 import core.ui.event.KeyEvent;
 import core.ui.event.KeybindEvent;
@@ -12,14 +14,14 @@ import core.ui.event.MouseWheelEvent;
 import core.ui.event.StateChangeEvent;
 import core.ui.event.StateChangeListener;
 import core.ui.event.TimeEvent;
-import core.ui.event.UIEvent;
 import core.ui.utils.Accessible;
-import core.ui.utils.UIContainer;
 
 public abstract class GameSetup implements UIContainer {
 
 	private ArrayList<UIElement> uiElements = new ArrayList<UIElement>();
 	protected UIElement focus;
+	
+//	private EventQueue;
 	
 	/** Handler for all contained UI state changes */
 	private final StateChangeListener stateChangeListener = new StateChangeListener() {
@@ -71,9 +73,10 @@ public abstract class GameSetup implements UIContainer {
 		for(UIElement ui : uiElements) {
 			ui.draw();
 		}
-		if(getFocus() != null && !(getFocus() instanceof UIContainer)) {
+		// TODO Add a focus specific draw function per element
+		/*if(getFocus() != null && !(getFocus() instanceof UIContainer)) {
 			getFocus().drawBounds();
-		}
+		}*/
 	}
 	
 	public ArrayList<UIElement> getUI() {
@@ -143,7 +146,7 @@ public abstract class GameSetup implements UIContainer {
 		uiElements.add(index, element);
 	}
 	
-	public void fireEvent(UIEvent e) {
+	public void fireEvent(AvoEvent e) {
 		if(e instanceof StateChangeEvent) {
 			processStateChangeEvent(e);
 		} else if(e instanceof TimeEvent) {
@@ -159,7 +162,7 @@ public abstract class GameSetup implements UIContainer {
 		}
 	}
 	
-	protected void processStateChangeEvent(UIEvent e) {
+	protected void processStateChangeEvent(AvoEvent e) {
 		if(stateChangeListener != null) {
 			stateChangeListener.changeState((StateChangeEvent) e);
 		}

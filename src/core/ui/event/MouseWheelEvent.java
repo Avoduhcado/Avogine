@@ -1,6 +1,8 @@
 package core.ui.event;
 
-public class MouseWheelEvent extends UIEvent {
+import core.event.AvoEvent;
+
+public class MouseWheelEvent extends AvoEvent {
 
 	private int scroll;
 	

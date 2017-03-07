@@ -1,6 +1,6 @@
-package core.ui.event;
+package core.event;
 
-public abstract class UIEvent {
+public abstract class AvoEvent {
 	
 	private boolean consumed;
 	

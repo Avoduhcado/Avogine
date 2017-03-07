@@ -1,6 +1,7 @@
 package core.entities.components.interactions;
 
 import core.entities.Entity;
+import core.entities.events.InteractEvent;
 import core.scripts.Script;
 
 public class TouchInteraction extends Interaction {
@@ -9,6 +10,17 @@ public class TouchInteraction extends Interaction {
 		super(entity, script);
 		
 		//entity.getBody().createFixture(createActivationRange());
+	}
+	
+	@Override
+	public void interact(InteractEvent e) {
+		// TODO Auto-generated method stub
+	}
+
+	@Override
+	public void interupt(InteractEvent e) {
+		// TODO Auto-generated method stub
+		
 	}
 
 	/*private FixtureDef createActivationRange() {

@@ -1,8 +1,9 @@
 package core.ui.event;
 
+import core.event.AvoEvent;
 import core.utilities.keyboard.Keybind;
 
-public class KeybindEvent extends UIEvent {
+public class KeybindEvent extends AvoEvent {
 
 	private final Keybind keybind;
 	

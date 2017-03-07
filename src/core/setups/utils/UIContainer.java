@@ -1,9 +1,9 @@
-package core.ui.utils;
+package core.setups.utils;
 
 import java.util.ArrayList;
 
+import core.event.AvoEvent;
 import core.ui.UIElement;
-import core.ui.event.UIEvent;
 
 public interface UIContainer {
 
@@ -17,6 +17,6 @@ public interface UIContainer {
 	public UIElement getFocus();
 	public void setFocus(UIElement element);
 	
-	public void fireEvent(UIEvent e);
+	public void fireEvent(AvoEvent e);
 	
 }

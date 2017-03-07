@@ -1,16 +1,12 @@
 package core.setups;
 
-import java.util.ArrayList;
-
 import org.lwjgl.util.vector.Vector3f;
 import org.lwjgl.util.vector.Vector4f;
 
 import core.Camera;
-import core.entities.Entity;
-import core.entities.bodies.PlainBody;
-import core.entities.controllers.PlayerController;
-import core.entities.renders.PlainRender;
+import core.entities.events.InteractEvent;
 import core.render.DrawUtils;
+import core.setups.scenes.Scene;
 import core.ui.event.KeybindEvent;
 import core.ui.event.KeybindListener;
 import core.ui.event.MouseWheelEvent;
@@ -23,28 +19,22 @@ public class Stage extends GameSetup {
 			
 	private boolean pause;
 	
-	private ArrayList<Entity> entities = new ArrayList<Entity>();
+	private Scene scene;
 	
 	private KeybindListener keybindListener = new StageKeybindListener();
 	private MouseWheelListener mouseWheelListener = new StageMouseWheelListener();
 	
 	public Stage() {
-		Entity ent = new Entity();
-		ent.setRender(new PlainRender(ent, "AGDG Logo"));
-		ent.setBody(new PlainBody(ent, new Vector3f(-16f, -16f, 0f), new Vector3f(256f, 256f, 0f)));
-		//ent.addComponent(AutorunInteraction.class, new AutorunInteraction(ent, new Script(ent, "Butts")));
-		entities.add(ent);
-		
-		ent = new Entity();
-		ent.setRender(new PlainRender(ent, "AGDG Logo"));
-		ent.setBody(new PlainBody(ent, new Vector3f(0f, 0f, 0f), new Vector3f(32f, 32f, 0f)));
-		ent.setController(new PlayerController(ent));
-		//ent.addComponent(AutorunInteraction.class, new AutorunInteraction(ent, new Script(ent, "Butts")));
-		entities.add(ent);
-		
-		Camera.get().setFocus(ent.getBody());
-		
+		// CORNFLOWER BLUE
 		Camera.get().setClear(new Vector4f(101f / 255f, 156f / 255f, 239f / 255f, 1f));
+		
+		initScene();
+	}
+	
+	private void initScene() {
+		scene = new Scene();
+		
+		scene.fireEvent(new InteractEvent(InteractEvent.INTERACT, null));
 	}
 	
 	@Override
@@ -56,7 +46,7 @@ public class Stage extends GameSetup {
 
 	@Override
 	public void draw() {
-		entities.stream().sorted().forEach(Entity::draw);
+		scene.draw();
 	}
 	
 	@Override
@@ -107,10 +97,21 @@ public class Stage extends GameSetup {
 					setFocus(gameMenu);
 				}
 				break;
+			/*case CONFIRM:
+				e.consume();
+				// TODO
+				// Filter to only find events that the player overlaps and build a list you can cycle through for things to activate
+				InteractEvent ie = new InteractEvent(InteractEvent.INTERACT, null);
+				scene.getEntities().stream()
+					.map(ent -> ent.getComponent(Interaction.class))
+					.filter(Objects::nonNull)
+					.findFirst()
+					.ifPresent(ent -> ent.interact(ie));*/
 			default:
-				entities.stream()
-				.filter(ent -> ent.controllable())
-				.forEach(ent -> ent.getController().keybindClicked(e));
+				// TODO Fix this yo, it's slop
+				scene.getEntities().stream()
+					.filter(ent -> ent.hasController())
+					.forEach(ent -> ent.getController().keybindClicked(e));
 				break;
 			}
 		}
@@ -119,7 +120,7 @@ public class Stage extends GameSetup {
 	private class StageMouseWheelListener implements MouseWheelListener {
 		@Override
 		public void wheelScrolled(MouseWheelEvent e) {
-			Camera.get().setScale(Vector4f.add(Camera.get().getScale(), new Vector4f(e.getScroll() / 1000f, e.getScroll() / 1000f, 0f, 0f), null));
+			Camera.get().setScale(Vector3f.add(Camera.get().getScale(), new Vector3f(e.getScroll() / 1000f, e.getScroll() / 1000f, 0f), null));
 		}
 	}
 	

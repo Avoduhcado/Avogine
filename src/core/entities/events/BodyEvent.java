@@ -2,7 +2,9 @@ package core.entities.events;
 
 import org.lwjgl.util.vector.Vector3f;
 
-public class BodyEvent extends EntityEvent {
+import core.event.AvoEvent;
+
+public class BodyEvent extends AvoEvent {
 	
 	public static final int MOVE = 1;
 	

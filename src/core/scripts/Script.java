@@ -1,39 +1,64 @@
 package core.scripts;
 
+import java.util.LinkedList;
+import java.util.Queue;
+
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.google.gson.JsonSyntaxException;
 
 import core.entities.Entity;
-import core.ui.TextBox;
-import core.ui.UIElement;
 
-public class Script implements Scriptable {
-	private static final long serialVersionUID = 1L;
-	
-	private static final String START_EVENT = "EVENT";
+public class Script {
 	private static final String OPTIONS = "OPTIONS";
+	private static final String START_EVENT = "EVENT";
+	
+	private static final JsonObject DEFAULT_SCRIPT = new JsonParser().parse("{" + START_EVENT + ": null}").getAsJsonObject();
+	public static final String testScript = "{\"EVENT\":[{\"TEXT\":\"Hello friends\"},{\"CHOICE\":{\"TITLE\":\"How are you?\",\"CHOICES\":[\"Good\",\"Bad\"],\"RESULTS\":{\"0\":[{\"TEXT\":\"Dope\"}],\"1\":[{\"TEXT\":\"Darn\"},{\"TEXT\":\"That sucks\"}]}}},{\"TEXT\":\"Well, see ya later.\"}]}";
 	
 	private Entity source;
 	private Entity reader;
 	
 	private JsonObject parsedData;
-	private JsonElement currentEvent;
+	private Queue<JsonObject> eventQueue = new LinkedList<>();
 	
 	private boolean reading;
-	
-	private UIElement screenElement;
-	
+		
 	public Script(Entity source, String data) {
-		parseData(data);
 		this.source = source;
+		parseData(data);
+		fillQueue();
 	}
 
 	private void parseData(String data) {
-		parsedData = new JsonParser().parse(data).getAsJsonObject();
+		try {
+			parsedData = new JsonParser().parse(data).getAsJsonObject();
+		} catch(JsonSyntaxException | IllegalStateException e) {
+			System.err.println("Failed to parse script for: " + data);
+			e.printStackTrace();
+			parsedData = DEFAULT_SCRIPT.getAsJsonObject();
+		}
+	}
+	
+	public Queue<JsonObject> fillQueue(Queue<JsonObject> queue, JsonArray array) {
+		queue.clear();
+		for(JsonElement e : array) {
+			queue.add(e.getAsJsonObject());
+		}
+		return queue;
+	}
+	
+	public void fillQueue() {
+		fillQueue(eventQueue, parsedData.get(START_EVENT).getAsJsonArray());
+	}
+	
+	public void mergeQueue(Queue<JsonObject> newQueue) {
+		newQueue.addAll(eventQueue);
+		eventQueue = newQueue;
 	}
 
-	@Override
 	public void startReading(Entity reader) {
 		setReading(true);
 		setReader(reader);
@@ -42,51 +67,57 @@ public class Script implements Scriptable {
 		read();
 	}
 
-	@Override
 	public void read() {
-		// TODO process currentEvent through Interpreter, load up next currentEvent?
-		// How do I handle conditionals?
-		
-		// Conditionals?
-		if(currentEvent.isJsonArray()) {
-			/*if(Interpreter.interpretConditional(currentEvent.getAsJsonArray().get(0).getAsJsonObject())) {
-				currentEvent = 
-			}*/
-		}
-		if(currentEvent.isJsonObject()) {
-			Interpreter.interpret(currentEvent.getAsJsonObject());
-		} else {
-			// XXX Shouldn't happen
-			resetEvent();
+		// If the event is over entirely, cancel the reading
+		if(eventQueue.isEmpty()) {
+			endReading();
 			return;
 		}
+		
+		// Interpret the next event and perform it
+		/*Scriptable scriptEvent = */Interpreter.interpret(this, eventQueue.poll());
+		//scriptEvent.perform();
+		
+		
+		// Perform close action on previous event
+		/*if(scriptEvent != null && scriptEvent.getCloseAction() != null) {
+			scriptEvent.getCloseAction().perform();
+		}
+		
+		// If the event is over entirely, cancel the reading
+		if(eventQueue.isEmpty()) {
+			endReading();
+			return;
+		}
+		
+		// Interpret the next event and perform it
+		scriptEvent = Interpreter.interpret(this, eventQueue.poll());
+		if(scriptEvent.getAction() != null) {
+			scriptEvent.getAction().perform();
+		}
+		
+		// If an event has an auto complete action, run it and read the next event
+		if(scriptEvent.getAutoCompleteAction() != null) {
+			scriptEvent.getAutoCompleteAction().perform();
+			read();
+		}*/
 	}
 
-	@Override
 	public void endReading() {
 		setReading(false);
 	}
 
-	@Override
 	public void interrupt() {
-		if(screenElement != null) {
-			//((GameSetup) source.getContainer()).getUI().remove(screenElement);
-		}
-		//screenElement = new TextBox(reader.getZBody().getX(), reader.getZBody().getY(), null, "See ya later faaaag", false);
-		((TextBox) screenElement).setKillTimer(2.5f);
-		//((GameSetup) source.getContainer()).addUI(screenElement);
-		
 		setReading(false);
 		setReader(null);
 	}
 
-	@Override
 	public boolean isBusyReading() {
 		return reading;
 	}
 	
 	private void resetEvent() {
-		currentEvent = parsedData.get(START_EVENT);
+		fillQueue();
 	}
 	
 	private void setReading(boolean reading) {
@@ -95,6 +126,14 @@ public class Script implements Scriptable {
 
 	private void setReader(Entity reader) {
 		this.reader = reader;
+	}
+	
+	public Entity getSource() {
+		return source;
+	}
+	
+	public Entity getReader() {
+		return reader;
 	}
 
 }

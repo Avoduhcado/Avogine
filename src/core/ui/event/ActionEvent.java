@@ -1,5 +1,7 @@
 package core.ui.event;
 
-public class ActionEvent extends UIEvent {
+import core.event.AvoEvent;
+
+public class ActionEvent extends AvoEvent {
 
 }

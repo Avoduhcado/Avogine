@@ -1,14 +1,14 @@
 package core.render.effects;
 
-import org.lwjgl.util.vector.Vector4f;
+import org.lwjgl.util.vector.Vector;
 
 import core.Theater;
 import core.utilities.MathUtils;
 
-public abstract class ScreenEffect {
-
-	protected Vector4f startingValue;
-	protected Vector4f endingValue;
+public abstract class TweenEffect<T extends Vector> {
+	
+	protected T startingValue;
+	protected T endingValue;
 	protected float duration;
 	protected float currentTime;
 	protected Tween tween;
@@ -17,9 +17,9 @@ public abstract class ScreenEffect {
 	protected boolean reverse;
 	protected boolean complete;
 	
-	public ScreenEffect(Vector4f start, Vector4f end, float duration, boolean moveTo, Tween tween) {
+	public TweenEffect(T start, T end, float duration, boolean moveTo, Tween tween) {
 		if(moveTo) {
-			Vector4f.sub(end, start, end);
+			end = handleMoveTo(start, end);
 		}
 		this.startingValue = start;
 		this.endingValue = end;
@@ -37,7 +37,7 @@ public abstract class ScreenEffect {
 		
 		applyEffect(calculateTween());
 	}
-
+	
 	protected void incrementTime() {
 		currentTime = MathUtils.clamp(currentTime + Theater.getDeltaSpeed(0.025f), 0, duration);
 
@@ -50,22 +50,14 @@ public abstract class ScreenEffect {
 		}
 	}
 	
-	protected Vector4f calculateTween() {
-		Vector4f value = new Vector4f();
-		value.x = tween.getTweenedValue(currentTime, startingValue.x, endingValue.x, duration);
-		value.y = tween.getTweenedValue(currentTime, startingValue.y, endingValue.y, duration);
-		value.z = tween.getTweenedValue(currentTime, startingValue.z, endingValue.z, duration);
-		value.w = tween.getTweenedValue(currentTime, startingValue.w, endingValue.w, duration);
-		
-		return value;
-	}
-	
-	protected abstract void applyEffect(Vector4f value);
+	protected abstract T handleMoveTo(T start, T end);
+	protected abstract T calculateTween();
+	protected abstract void applyEffect(T value);
 
 	protected void processLoop() {
 		currentTime = 0f;
 		if(reverse) {
-			endingValue.negate(endingValue);
+			endingValue.negate();
 		}
 	}
 			
@@ -73,11 +65,11 @@ public abstract class ScreenEffect {
 		this.complete = true;
 	}
 	
-	public Vector4f getEndValue() {
+	public T getEndValue() {
 		return endingValue;
 	}
 
-	public void setEndValue(Vector4f value) {
+	public void setEndValue(T value) {
 		this.endingValue = value;
 	}
 

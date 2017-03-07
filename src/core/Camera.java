@@ -10,13 +10,15 @@ import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.util.vector.Matrix4f;
+import org.lwjgl.util.vector.Vector3f;
 import org.lwjgl.util.vector.Vector4f;
 import org.newdawn.slick.opengl.PNGDecoder;
 import org.newdawn.slick.util.ResourceLoader;
 
 import core.entities.bodies.Body;
 import core.render.DrawUtils;
-import core.render.effects.ScreenEffect;
+import core.render.effects.TweenEffect;
 import core.setups.GameSetup;
 import core.utilities.text.Text;
 
@@ -43,15 +45,15 @@ public class Camera {
 	/** Target for the camera to "look at" and always be centered in the screen */
 	private Body focus;
 	
-	private Vector4f translation = new Vector4f();
-	private Vector4f scale = new Vector4f(1f, 1f, 1f, 1f);
-	private Vector4f rotation = new Vector4f();
+	private Vector3f translation = new Vector3f();
+	private Vector3f scale = new Vector3f(1f, 1f, 1f);
+	private Vector3f rotation = new Vector3f();
 	
 	private Vector4f clearColor = new Vector4f(0f, 0f, 0f, 1f);
-	private Vector4f offset = new Vector4f();
+	private Vector3f offset = new Vector3f();
 	private Vector4f tint = new Vector4f(0f, 0f, 0f, 1f);
 	
-	private List<ScreenEffect> screenEffects = new ArrayList<ScreenEffect>();
+	private List<TweenEffect> screenEffects = new ArrayList<TweenEffect>();
 
 	/** Screen singleton */
 	private static Camera camera;
@@ -142,7 +144,7 @@ public class Camera {
 			Text.drawString("Current Setup: " + Theater.get().getSetup().getClass().getName(), 15, y, Text.DEBUG_TEXT);
 			Text.drawString("Avogine v" + Theater.AVOGINE_VERSION, 15, y += 25, Text.DEBUG_TEXT);
 			Text.drawString("Position: " + translation.toString(), 15, y += 40, Text.DEBUG_TEXT);
-			Text.drawString("Scale: " + scale.toString(), 15, y += 30, Text.DEBUG_TEXT);
+			Text.drawString("Scale: " + scale, 15, y += 30, Text.DEBUG_TEXT);
 			Text.drawString("Rotation: " + rotation.toString(), 15, y += 30, Text.DEBUG_TEXT);
 			Text.drawString("Mouse: " + Input.getMouseEventX() + " " + Input.getMouseEventY(), 15, y += 30, Text.DEBUG_TEXT);
 			Text.drawString("Focus: " + setup.printFocusHierarchy(), 15, y += 30, Text.DEBUG_TEXT);
@@ -154,9 +156,61 @@ public class Camera {
 	private void drawScreenTint() {
 		DrawUtils.fillScreen(tint.x, tint.y, tint.z, tint.w);
 	}
-
+	
+	public Matrix4f buildCameraTransform() {
+		Matrix4f translate = new Matrix4f();
+		Matrix4f rotate = new Matrix4f();
+		Matrix4f scalem = new Matrix4f();
+		
+		Matrix4f.setIdentity(translate);
+		translate.m03 = translation.x;
+		translate.m13 = translation.y;
+		translate.m23 = translation.z;
+		
+		Matrix4f.setIdentity(rotate);
+		/*rotate.m11 = (float) Math.cos(Math.toRadians(rotation.x));
+		rotate.m12 = (float) -Math.sin(Math.toRadians(rotation.x));
+		rotate.m21 = (float) Math.sin(Math.toRadians(rotation.x));
+		rotate.m22 = (float) Math.cos(Math.toRadians(rotation.x));
+		
+		Matrix4f.setIdentity(scalem);
+		scalem.m00 = scale.x;
+		scalem.m11 = scale.y;
+		scalem.m22 = scale.z;*/
+		
+		Matrix4f world = new Matrix4f();
+		world.translate(new Vector3f(translation.x, translation.y, translation.z));
+		//world.rotate((float) Math.toRadians(rotation.x), new Vector3f(1f, 0, 0));
+		//world.scale(scale);
+		//Matrix4f world = Matrix4f.mul(translate, rotate, null);
+		//Matrix4f.mul(world, scalem, world);
+		//world.scale(scale);
+		//System.out.println(world.toString());
+		return world;
+	}
+	
 	private void positionCamera() {
-		// Translation
+		Matrix4f world = buildCameraTransform();
+
+		GL11.glTranslated(viewWidth * 0.5, viewHeight * 0.5, 0);
+		GL11.glScalef(scale.x, scale.y, scale.z);
+		GL11.glTranslated(-viewWidth * 0.5, -viewHeight * 0.5, 0);
+		
+		GL11.glTranslated(viewWidth * 0.5, viewHeight * 0.5, 0);
+		GL11.glRotatef(rotation.x, 1, 0, 0);
+		GL11.glRotatef(rotation.y, 0, 1, 0);
+		GL11.glRotatef(rotation.z, 0, 0, 1);
+		GL11.glTranslated(-viewWidth * 0.5, -viewHeight * 0.5, 0);
+		
+		Vector4f topLeft = new Vector4f();
+		if(focus != null) {
+			topLeft.set(-focus.getCenter().getX() + (viewWidth / 2), -focus.getCenter().getY() + (viewHeight / 2));
+			//topLeft.set(focus.getCenter().x, focus.getCenter().y);
+		}
+		Matrix4f.transform(world, topLeft, topLeft);
+		GL11.glTranslatef(topLeft.x, topLeft.y, 0);
+		
+		/*// Translation
 		GL11.glTranslated(translation.x, translation.y, translation.z);
 
 		// Perform scaling/rotation from the center of the screen to avoid weird offsets
@@ -168,18 +222,20 @@ public class Camera {
 		// Rotation
 		GL11.glTranslated(viewWidth * 0.5, viewHeight * 0.5, 0);
 		// I don't recommend rotating on the y or z axis in 2D space
-		GL11.glRotatef(rotation.x, 0, 0, 1f);
+		GL11.glRotatef(rotation.x, 1f, 0, 0);
+		GL11.glRotatef(rotation.y, 0, 1f, 0);
+		GL11.glRotatef(rotation.z, 0, 0, 1f);
 		GL11.glTranslated(-viewWidth * 0.5, -viewHeight * 0.5, 0);
 
 		// Place the focus target in the center of the screen
 		if(focus != null) {
 			GL11.glTranslated(-focus.getCenter().getX() + (viewWidth / 2), -focus.getCenter().getY() + (viewHeight / 2), 0);
-		}
+		}*/
 	}
 
 	private void processEffects() {
-		screenEffects.stream().forEach(ScreenEffect::apply);
-		screenEffects.removeIf(ScreenEffect::isComplete);
+		screenEffects.stream().forEach(TweenEffect::apply);
+		screenEffects.removeIf(TweenEffect::isComplete);
 	}
 	
 	public Body getFocus() {
@@ -253,6 +309,24 @@ public class Camera {
 		Display.setVSyncEnabled(vsync);
 	}
 	
+	/**
+	 * Convert the supplied x value to ignore screen offsets
+	 * @param x
+	 * @return
+	 */
+	public double convertXCoordinateToScreenX(double x) {
+		return x + (-focus.getCenter().getX() + (viewWidth / 2));
+	}
+	
+	/**
+	 * Convert the supplied y value to ignore screen offsets
+	 * @param y
+	 * @return
+	 */
+	public double convertYCoordinateToScreenY(double y) {
+		return y + (-focus.getCenter().getY() + (viewHeight / 2));
+	}
+	
 	public double getFrameXScale() {
 		return (double) displayWidth / (double) viewWidth;
 	}
@@ -293,33 +367,35 @@ public class Camera {
 		Display.destroy();
 	}
 	
-	public Vector4f getTranslation() {
+	public Vector3f getTranslation() {
 		return translation;
 	}
 	
-	public void setTranslation(Vector4f translation) {
+	public void setTranslation(Vector3f translation) {
 		this.translation = translation;
 	}
 
-	public Vector4f getScale() {
+	public Vector3f getScale() {
 		return scale;
 	}
 	
-	public void setScale(Vector4f scale) {
-		this.scale = scale;
+	public void setScale(Vector3f value) {
+		this.scale = value;
+	}
+	
+	public void setScale(float scale) {
+		this.scale.set(scale, scale, scale);
 	}
 
-	public Vector4f getRotation() {
+	public Vector3f getRotation() {
 		return rotation;
 	}
 	
-	public void setRotation(Vector4f rotation) {
+	public void setRotation(Vector3f rotation) {
+		rotation.set(rotation.x >= 360 ? rotation.x - 360 : (rotation.x < 0 ? rotation.x + 360 : rotation.x),
+				rotation.y >= 360 ? rotation.y - 360 : (rotation.y < 0 ? rotation.y + 360 : rotation.y),
+				rotation.z >= 360 ? rotation.z - 360 : (rotation.z < 0 ? rotation.z + 360 : rotation.z));
 		this.rotation = rotation;
-		if(this.rotation.x >= 360) {
-			this.rotation.x -= 360;
-		} else if(this.rotation.x < 0) {
-			this.rotation.x += 360;
-		}
 	}
 
 	public Vector4f getClear() {
@@ -339,7 +415,7 @@ public class Camera {
 		this.tint = tint;
 	}
 	
-	public void addScreenEffect(ScreenEffect effect) {
+	public void addScreenEffect(TweenEffect effect) {
 		screenEffects.add(effect);
 	}
 
@@ -347,7 +423,7 @@ public class Camera {
 		screenEffects.clear();
 	}
 	
-	public void cancelEffect(ScreenEffect effect) {
+	public void cancelEffect(TweenEffect effect) {
 		screenEffects.remove(effect);
 	}
 }

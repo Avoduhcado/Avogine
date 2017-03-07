@@ -1,6 +1,8 @@
 package core.ui.event;
 
-public class WindowEvent extends UIEvent {
+import core.event.AvoEvent;
+
+public class WindowEvent extends AvoEvent {
 
 	private int newWindowWidth;
 	private int newWindowHeight;

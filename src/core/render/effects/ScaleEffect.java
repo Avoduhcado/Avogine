@@ -1,17 +1,17 @@
 package core.render.effects;
 
-import org.lwjgl.util.vector.Vector4f;
+import org.lwjgl.util.vector.Vector3f;
 
 import core.Camera;
 
-public class ScaleEffect extends ScreenEffect {
+public class ScaleEffect extends Tween3fEffect {
 
-	public ScaleEffect(Vector4f value, float duration, boolean addValueNotMove, Tween tween) {
+	public ScaleEffect(Vector3f value, float duration, boolean addValueNotMove, Tween tween) {
 		super(Camera.get().getScale(), value, duration, addValueNotMove, tween);
 	}
 
 	@Override
-	protected void applyEffect(Vector4f value) {
+	protected void applyEffect(Vector3f value) {
 		Camera.get().setScale(value);
 	}
 

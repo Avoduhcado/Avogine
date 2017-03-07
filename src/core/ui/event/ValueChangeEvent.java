@@ -1,6 +1,8 @@
 package core.ui.event;
 
-public class ValueChangeEvent extends UIEvent {
+import core.event.AvoEvent;
+
+public class ValueChangeEvent extends AvoEvent {
 
 	private Object value;
 	private Object change;

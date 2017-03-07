@@ -1,32 +1,26 @@
 package core.entities.events;
 
 import core.entities.Entity;
+import core.event.AvoEvent;
 
-public class InteractEvent extends EntityEvent {
+public class InteractEvent extends AvoEvent {
 
-	public static enum Type {
-		AUTORUN,
-		ON_TOUCH,
-		ON_ACTIVATE,
-		INTERRUPT;
-	}
+	public static final int INITIATE = 0;
+	public static final int INTERACT = 1;
+	public static final int INTERRUPT = 2;
 	
-	protected Type interactType;
+	protected final int interactType;
 	protected Entity interactor;
 	
-	public InteractEvent(Type interactType, Entity interactor) {
+	public InteractEvent(int interactType, Entity interactor) {
 		this.interactType = interactType;
 		this.interactor = interactor;
 	}
 	
-	public Type getInteractType() {
+	public int getInteractType() {
 		return interactType;
 	}
 	
-	public void setInteractType(Type interactType) {
-		this.interactType = interactType;
-	}
-
 	public Entity getInteractor() {
 		return interactor;
 	}

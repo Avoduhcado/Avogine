@@ -2,7 +2,9 @@ package core.ui.event;
 
 import java.awt.geom.Point2D;
 
-public class MouseEvent extends UIEvent {
+import core.event.AvoEvent;
+
+public class MouseEvent extends AvoEvent {
 
 	public static final int CLICKED = 1;
 	public static final int PRESSED = 2;

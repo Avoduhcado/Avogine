@@ -8,6 +8,7 @@ import java.io.IOException;
 
 import org.lwjgl.input.Keyboard;
 
+import core.event.AvoEvent;
 import core.ui.event.ActionEvent;
 import core.ui.event.ActionListener;
 import core.ui.event.KeyEvent;
@@ -16,7 +17,6 @@ import core.ui.event.MouseEvent;
 import core.ui.event.MouseListener;
 import core.ui.event.TimeEvent;
 import core.ui.event.TimeListener;
-import core.ui.event.UIEvent;
 import core.ui.event.ValueChangeEvent;
 import core.ui.event.ValueChangeListener;
 import core.ui.utils.Accessible;
@@ -268,7 +268,7 @@ public class InputBox extends UIElement implements Accessible, HasText {
 	}
 	
 	@Override
-	public void fireEvent(UIEvent e) {
+	public void fireEvent(AvoEvent e) {
 		super.fireEvent(e);
 		
 		if(e instanceof ActionEvent) {

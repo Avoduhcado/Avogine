@@ -4,6 +4,7 @@ import org.lwjgl.util.vector.Vector3f;
 
 import core.entities.Entity;
 import core.entities.events.BodyEvent;
+import core.entities.events.BodyCollisionEvent;
 
 public class PlainBody extends Body {
 
@@ -29,6 +30,8 @@ public class PlainBody extends Body {
 	@Override
 	public void move(BodyEvent e) {
 		Vector3f.add(position, e.getMovement(), position);
+		
+		entity.getContainer().fireEvent(new BodyCollisionEvent(this));
 	}
 
 }

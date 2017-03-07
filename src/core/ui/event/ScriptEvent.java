@@ -1,12 +1,13 @@
 package core.ui.event;
 
+import core.event.AvoEvent;
 import core.ui.UIElement;
 
 enum InteractType {
 	KEYPRESS, PLAYER_TOUCH, ENTITY_TOUCH, AUTO, PARALLEL;
 }
 
-public abstract class ScriptEvent extends UIEvent {
+public abstract class ScriptEvent extends AvoEvent {
 
 	//private Scriptable scriptHost;
 	private InteractType type;

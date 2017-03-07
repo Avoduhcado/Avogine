@@ -5,6 +5,8 @@ import java.util.Collection;
 
 import org.lwjgl.util.vector.Vector2f;
 
+import core.event.AvoEvent;
+import core.setups.utils.UIContainer;
 import core.ui.event.ActionEvent;
 import core.ui.event.KeyEvent;
 import core.ui.event.KeybindEvent;
@@ -16,10 +18,8 @@ import core.ui.event.StateChangeEvent;
 import core.ui.event.StateChangeListener;
 import core.ui.event.TimeEvent;
 import core.ui.event.TimeListener;
-import core.ui.event.UIEvent;
 import core.ui.utils.Accessible;
 import core.ui.utils.UIBounds;
-import core.ui.utils.UIContainer;
 import core.utilities.MathUtils;
 import core.utilities.keyboard.Keybind;
 
@@ -212,7 +212,7 @@ public class ElementGroup extends UIElement implements UIContainer, Accessible {
 	}
 
 	@Override
-	public void fireEvent(UIEvent e) {
+	public void fireEvent(AvoEvent e) {
 		if(e instanceof StateChangeEvent) {
 			processStateChangeEvent((StateChangeEvent) e);
 		} else if(e instanceof MouseEvent) {

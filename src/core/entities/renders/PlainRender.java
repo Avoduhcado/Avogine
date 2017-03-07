@@ -4,7 +4,6 @@ import core.Camera;
 import core.Theater;
 import core.entities.Entity;
 import core.render.SpriteList;
-import core.render.Transform;
 import core.utilities.text.Text;
 import core.utilities.text.TextModifier;
 import core.utilities.text.TextModifier.TextModValue;
@@ -19,7 +18,9 @@ public class PlainRender extends Render {
 	}
 	
 	@Override
-	public void draw(Transform transform) {
+	public void draw() {
+		super.draw();
+		
 		SpriteList.get(sprite).draw(transform);
 		
 		if(Theater.debug) {

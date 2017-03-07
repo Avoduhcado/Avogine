@@ -1,6 +1,8 @@
 package core.ui.event;
 
-public class KeyEvent extends UIEvent {
+import core.event.AvoEvent;
+
+public class KeyEvent extends AvoEvent {
 
 	private int key;
 	private char keyChar;

@@ -1,6 +1,8 @@
 package core.ui.event;
 
-public class TimeEvent extends UIEvent {
+import core.event.AvoEvent;
+
+public class TimeEvent extends AvoEvent {
 
 	private float delta;
 	

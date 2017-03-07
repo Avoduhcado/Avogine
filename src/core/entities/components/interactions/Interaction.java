@@ -15,14 +15,21 @@ public abstract class Interaction extends EntityComponent {
 		this.script = script;
 	}
 	
-	public void interact(InteractEvent e) {
-		if(!script.isBusyReading() && e.getInteractType() != InteractEvent.Type.INTERRUPT) {
+	public abstract void interact(InteractEvent e);
+	public abstract void interupt(InteractEvent e);
+	
+	/*public void interact(InteractEvent e) {
+		if(!script.isBusyReading()) {
 			script.startReading(e.getInteractor());
-		} else if(script.isBusyReading() && e.getInteractType() == InteractEvent.Type.INTERRUPT) {
-			script.interrupt();
-		} else if(script.isBusyReading()) {
+		} else {
 			script.read();
 		} 
 	}
+	
+	public void interrupt(InteractEvent e) {
+		if(script.isBusyReading()) {
+			script.interrupt();
+		} 
+	}*/
 	
 }

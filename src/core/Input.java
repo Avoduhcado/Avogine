@@ -2,19 +2,20 @@ package core;
 
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
+import org.lwjgl.util.vector.Vector3f;
 import org.lwjgl.util.vector.Vector4f;
 
 import core.render.effects.RotateEffect;
 import core.render.effects.ScaleEffect;
-import core.render.effects.ScreenEffect;
+import core.render.effects.TweenEffect;
 import core.render.effects.TintEffect;
 import core.render.effects.TranslateEffect;
 import core.render.effects.Tween;
+import core.setups.utils.UIContainer;
 import core.ui.event.KeyEvent;
 import core.ui.event.KeybindEvent;
 import core.ui.event.MouseEvent;
 import core.ui.event.MouseWheelEvent;
-import core.ui.utils.UIContainer;
 import core.utilities.keyboard.Keybind;
 
 public class Input {
@@ -53,28 +54,28 @@ public class Input {
 		
 		if(Keybind.SLOT4.clicked()) {
 			Camera.get().cancelAllEffects();
-			Camera.get().addScreenEffect(new ScaleEffect(new Vector4f(1f, 1f, 1f, 1f), 0f, true, Tween.LINEAR));
-			Camera.get().addScreenEffect(new TranslateEffect(new Vector4f(), 0f, true, Tween.LINEAR));
-			Camera.get().addScreenEffect(new RotateEffect(new Vector4f(), 0f, true, Tween.LINEAR));
+			Camera.get().addScreenEffect(new ScaleEffect(new Vector3f(1f, 1f, 1f), 0f, true, Tween.LINEAR));
+			Camera.get().addScreenEffect(new TranslateEffect(new Vector3f(), 0f, true, Tween.LINEAR));
+			Camera.get().addScreenEffect(new RotateEffect(new Vector3f(), 0f, true, Tween.LINEAR));
 			Camera.get().addScreenEffect(new TintEffect(new Vector4f(), 0f, true, Tween.LINEAR));
 		}
 		if(Keybind.SLOT5.clicked()) {
-			ScreenEffect rotation = new RotateEffect(new Vector4f(-360f, 0f, 0f, 0f), 2f, true, Tween.IN_OUT);
+			TweenEffect<Vector3f> rotation = new RotateEffect(new Vector3f(0f, 0f, -36f), 2f, true, Tween.IN_OUT);
 			rotation.setLoop(true);
 			Camera.get().addScreenEffect(rotation);
 			
-			ScreenEffect scale = new ScaleEffect(new Vector4f(2f, 2f, 1f, 1f), 2f, true, Tween.IN_OUT);
+			TweenEffect<Vector3f> scale = new ScaleEffect(new Vector3f(2f, 2f, 1f), 2f, true, Tween.IN_OUT);
 			scale.setLoop(true);
 			scale.setReverse(true);
 			Camera.get().addScreenEffect(scale);
 			
-			ScreenEffect translate = new TranslateEffect(new Vector4f(10f, 10f, 0f, 0f), 2f, true, Tween.IN_OUT);
+			TweenEffect<Vector3f> translate = new TranslateEffect(new Vector3f(10f, 10f, 0f), 2f, true, Tween.IN_OUT);
 			translate.setLoop(true);
 			translate.setReverse(true);
 			Camera.get().addScreenEffect(translate);
 		}
 		if(Keybind.SLOT6.clicked()) {
-			ScreenEffect colorFade = new TintEffect(new Vector4f(0f, 0f, 0f, 1f), 3f, true, Tween.OUT);
+			TweenEffect<Vector4f> colorFade = new TintEffect(new Vector4f(0f, 0f, 0f, 1f), 3f, true, Tween.OUT);
 			colorFade.setLoop(true);
 			colorFade.setReverse(true);
 			Camera.get().addScreenEffect(colorFade);

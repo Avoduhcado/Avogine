@@ -2,11 +2,12 @@ package core.ui;
 
 import java.util.ArrayList;
 
+import core.event.AvoEvent;
+import core.ui.event.CompleteScriptEvent;
 import core.ui.event.KeybindEvent;
 import core.ui.event.KeybindListener;
 import core.ui.event.TimeEvent;
 import core.ui.event.TimeListener;
-import core.ui.event.UIEvent;
 import core.ui.utils.Accessible;
 import core.ui.utils.HasText;
 import core.utilities.keyboard.Keybind;
@@ -19,8 +20,6 @@ public class TextBox extends UIElement implements HasText, Accessible {
 
 	protected float textFill = 0f;
 	protected float fillSpeed = 12.5f;
-	
-	private KeybindListener keybindListener;
 		
 	/**
 	 * A simple box to display a block of text.
@@ -51,6 +50,10 @@ public class TextBox extends UIElement implements HasText, Accessible {
 		addKeybindListener(new DefaultKeybindAdapter());
 	}
 	
+	public TextBox() {
+		this("", false);
+	}
+
 	@Override
 	public void draw() {
 		if(frame != null) {
@@ -145,19 +148,8 @@ public class TextBox extends UIElement implements HasText, Accessible {
 		});
 	}
 
-	public void removeKeybindListener(KeybindListener l) {
-		if(l == null) {
-			return;
-		}
-		keybindListener = null;
-	}
-	
-	public void addKeybindListener(KeybindListener l) {
-		keybindListener = l;
-	}
-	
 	@Override
-	public void fireEvent(UIEvent e) {
+	public void fireEvent(AvoEvent e) {
 		super.fireEvent(e);
 		
 		if(e instanceof KeybindEvent) {
@@ -180,13 +172,20 @@ public class TextBox extends UIElement implements HasText, Accessible {
 					setSize(getWidth((int) textFill + 1), getHeight((int) textFill + 1));
 					
 					removeTimeListener(timeListener);
+				} else {
+					fireEvent(new CompleteScriptEvent());
 				}
+				e.consume();
 			}
 		}
 	}
 	
 	public void setText(String text) {
-		parseText(text);		
+		lines.clear();
+		parseText(text);
+		setSize(getWidth(), getHeight());
+		// TODO Textfill should either be refactored to be -1 == draw all, or always set to max by default
+		textFill = getLength();
 	}
 	
 	// TODO Provide support to add text to the same line, or more than one line
@@ -263,7 +262,7 @@ public class TextBox extends UIElement implements HasText, Accessible {
 					}
 				}
 			} else {
-				segments.add(new TextSegment(null, text));
+				segments.add(new TextSegment("", text));
 			}
 		}
 		

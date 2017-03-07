@@ -54,12 +54,12 @@ public class Sprite {
 		}
 		
 		if(transform.isCenterRotate()) {
-			GL11.glTranslatef(texture.getImageWidth() / 2f, texture.getImageHeight() / 2f, 0);
+			GL11.glTranslatef(transform.getSize().x * 0.5f, transform.getSize().y * 0.5f, 0);
 			// Use Math.toDegrees for dope cool spinning effect
-			GL11.glRotated(transform.getRotation(), 0, 0, 1);
-			GL11.glTranslatef(-texture.getImageWidth() / 2f, -texture.getImageHeight() / 2f, 0);
+			GL11.glRotatef(transform.getRotation(), 0, 0, 1);
+			GL11.glTranslatef(-transform.getSize().x * 0.5f, -transform.getSize().y * 0.5f, 0);
 		} else {
-			GL11.glRotated(transform.getRotation(), 0, 0, 1);
+			GL11.glRotatef(transform.getRotation(), 0, 0, 1);
 		}
 		
 		GL11.glColor4f(transform.getColor().x, transform.getColor().y, transform.getColor().z, transform.getColor().w);

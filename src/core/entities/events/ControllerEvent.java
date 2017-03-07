@@ -1,6 +1,8 @@
 package core.entities.events;
 
-public class ControllerEvent extends EntityEvent {
+import core.event.AvoEvent;
+
+public class ControllerEvent extends AvoEvent {
 
 	public static final int MOVE_RIGHT = 1;
 	public static final int MOVE_LEFT = 2;

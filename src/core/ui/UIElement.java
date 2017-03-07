@@ -5,20 +5,24 @@ import java.awt.geom.Rectangle2D;
 import org.lwjgl.util.vector.Vector3f;
 
 import core.Theater;
+import core.event.AvoEvent;
 import core.render.DrawUtils;
 import core.render.textured.UIFrame;
+import core.setups.utils.UIContainer;
+import core.ui.event.CompleteScriptEvent;
+import core.ui.event.CompleteScriptListener;
+import core.ui.event.KeybindEvent;
+import core.ui.event.KeybindListener;
 import core.ui.event.MouseEvent;
 import core.ui.event.MouseListener;
 import core.ui.event.MouseMotionListener;
 import core.ui.event.StateChangeEvent;
 import core.ui.event.TimeEvent;
 import core.ui.event.TimeListener;
-import core.ui.event.UIEvent;
 import core.ui.event.WindowEvent;
 import core.ui.event.WindowListener;
 import core.ui.utils.HorizontalAlign;
 import core.ui.utils.UIBounds;
-import core.ui.utils.UIContainer;
 import core.ui.utils.VerticalAlign;
 import core.utilities.ValueSupplier;
 
@@ -29,11 +33,17 @@ public abstract class UIElement {
 	
 	protected final UIBounds uiBounds = new UIBounds();
 	
+	protected ValueSupplier<Double> x;
+	protected ValueSupplier<Double> y;
+	protected ValueSupplier<Double> width;
+	protected ValueSupplier<Double> height;
+	
 	protected UIFrame frame;
 	
 	protected boolean enabled = true;
 	
 	private UIContainer container;
+	protected Panel parentPanel;
 	private int state = NORMAL;
 	
 	/** For managing keyboard mapped menus. 0 = up, 1 = down, 2 = right, 3 = left */
@@ -41,8 +51,10 @@ public abstract class UIElement {
 		
 	protected MouseListener mouseListener;
 	protected MouseMotionListener mouseMotionListener;
+	protected KeybindListener keybindListener;
 	protected TimeListener timeListener;
 	protected WindowListener windowListener;
+	protected CompleteScriptListener completeScriptListener;
 	
 	public void draw() {
 		if(frame != null) {
@@ -185,6 +197,17 @@ public abstract class UIElement {
 	public void addMouseMotionListener(MouseMotionListener l) {
 		this.mouseMotionListener = l;
 	}
+
+	public void removeKeybindListener(KeybindListener l) {
+		if(l == null) {
+			return;
+		}
+		keybindListener = null;
+	}
+	
+	public void addKeybindListener(KeybindListener l) {
+		keybindListener = l;
+	}
 	
 	public void removeTimeListener(TimeListener l) {
 		if(l == null) {
@@ -197,13 +220,28 @@ public abstract class UIElement {
 		this.timeListener = l;
 	}
 	
-	public void fireEvent(UIEvent e) {
+	public void removeCompleteScriptListener(CompleteScriptListener l) {
+		if(l == null) {
+			return;
+		}
+		this.completeScriptListener = null;
+	}
+	
+	public void addCompleteScriptListener(CompleteScriptListener l) {
+		this.completeScriptListener = l;
+	}
+	
+	public void fireEvent(AvoEvent e) {
 		if(e instanceof MouseEvent) {
 			processMouseEvent((MouseEvent) e);
+		} else if(e instanceof KeybindListener) {
+			processKeybindEvent((KeybindEvent) e);
 		} else if(e instanceof TimeEvent) {
 			processTimeEvent((TimeEvent) e);
 		} else if(e instanceof WindowEvent) {
 			processWindowEvent((WindowEvent) e);
+		} else if(e instanceof CompleteScriptEvent) {
+			processCompleteScriptEvent((CompleteScriptEvent) e);
 		}
 	}
 	
@@ -246,6 +284,12 @@ public abstract class UIElement {
 			}
 		}
 	}
+
+	protected void processKeybindEvent(KeybindEvent e) {
+		if(keybindListener != null) {
+			keybindListener.keybindClicked(e);
+		}
+	}
 	
 	protected void processTimeEvent(TimeEvent e) {
 		if(timeListener != null) {
@@ -256,6 +300,12 @@ public abstract class UIElement {
 	protected void processWindowEvent(WindowEvent e) {
 		if(windowListener != null) {
 			windowListener.windowResized(e);
+		}
+	}
+	
+	protected void processCompleteScriptEvent(CompleteScriptEvent e) {
+		if(completeScriptListener != null) {
+			completeScriptListener.onCompleteScript(e);
 		}
 	}
 

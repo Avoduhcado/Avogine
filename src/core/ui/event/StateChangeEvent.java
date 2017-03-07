@@ -1,8 +1,9 @@
 package core.ui.event;
 
+import core.event.AvoEvent;
 import core.ui.UIElement;
 
-public class StateChangeEvent extends UIEvent {
+public class StateChangeEvent extends AvoEvent {
 
 	private UIElement element;
 	private int state;

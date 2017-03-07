@@ -5,47 +5,50 @@ import java.util.HashMap;
 
 import core.entities.bodies.Body;
 import core.entities.components.EntityComponent;
-import core.entities.components.interactions.ActivateInteraction;
-import core.entities.components.interactions.AutorunInteraction;
 import core.entities.components.interactions.Interaction;
-import core.entities.components.interactions.TouchInteraction;
 import core.entities.controllers.Controller;
 import core.entities.events.BodyEvent;
 import core.entities.events.ControllerEvent;
-import core.entities.events.EntityEvent;
 import core.entities.events.InteractEvent;
 import core.entities.renders.Render;
-import core.render.Transform;
+import core.event.AvoEvent;
+import core.setups.utils.EntityContainer;
+import core.utilities.ComponentBased;
 
-public class Entity implements Comparable<Entity>, Serializable {
+public class Entity implements ComponentBased<EntityComponent>, Comparable<Entity>, Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	private String name;
-	
-	private Body body;
-	private Render render;
-	private Controller controller;
+	private EntityContainer container;
 		
-	private HashMap<Class<? extends EntityComponent>, EntityComponent> components = new HashMap<Class<? extends EntityComponent>, EntityComponent>();
+	private HashMap<Class<?>, EntityComponent> components = new HashMap<Class<?>, EntityComponent>();
 
+	public Entity(EntityContainer container) {
+		this.container = container;
+	}
+	
 	/**
 	 * Draw the entity's render on the screen defined by the body's position.
 	 */
 	public void draw() {
-		if(renderable()) {
-			render.draw(constructTransform());
+		if(hasRender()) {
+			getRender().draw();
 		}
 	}
 
 	@Override
 	public int compareTo(Entity other) {
 		if(hasBody() && other.hasBody()) {
-			return (int) (body.getBottom().getY() - other.getBody().getBottom().getY());
+			return (int) (getBody().getBottom().getY() - other.getBody().getBottom().getY());
 		}
 		return 0;
 	}
 
-	public void fireEvent(EntityEvent event) {
+	public EntityContainer getContainer() {
+		return container;
+	}
+	
+	public void fireEvent(AvoEvent event) {
 		if(event instanceof ControllerEvent) {
 			processControllerEvent((ControllerEvent) event);
 		} else if(event instanceof BodyEvent) {
@@ -56,13 +59,13 @@ public class Entity implements Comparable<Entity>, Serializable {
 	}
 	
 	protected void processControllerEvent(ControllerEvent e) {
-		if(!controllable()) {
+		if(!hasController()) {
 			return;
 		}
 		
 		switch(e.getType()) {
 		case ControllerEvent.MOVE_RIGHT | ControllerEvent.MOVE_LEFT | ControllerEvent.MOVE_UP | ControllerEvent.MOVE_DOWN:
-			controller.movement(e);
+			getController().movement(e);
 			break;
 		}
 	}
@@ -74,105 +77,112 @@ public class Entity implements Comparable<Entity>, Serializable {
 		
 		switch(e.getType()) {
 		case BodyEvent.MOVE:
-			body.move(e);
+			getBody().move(e);
 			break;
 		}
 	}
 	
 	protected void processInteractEvent(InteractEvent event) {
-		switch(event.getInteractType()) {
-		case AUTORUN:
+		if(!hasComponent(Interaction.class)) {
+			return;
+		}
+		
+		getComponent(Interaction.class).interact(event);
+		
+		/*switch(event.getInteractType()) {
+		case InteractEvent.AUTORUN:
 			if(components.containsKey(AutorunInteraction.class)) {
 				((Interaction) components.get(AutorunInteraction.class)).interact(event);
 			}
 			break;
-		case ON_TOUCH:
+		case InteractEvent.ON_TOUCH:
 			if(components.containsKey(TouchInteraction.class)) {
 				((Interaction) components.get(TouchInteraction.class)).interact(event);
 			}
 			break;
-		case ON_ACTIVATE:
-		case INTERRUPT:
+		case InteractEvent.ON_ACTIVATE:
+		case InteractEvent.INTERRUPT:
 			if(components.containsKey(ActivateInteraction.class)) {
 				//getRender().lookAt(event.getInteractor());
 				((Interaction) components.get(ActivateInteraction.class)).interact(event);
 			}
 			break;
-		}
+		}*/
 	}
-	
-	private Transform constructTransform() {
-		Transform transform = new Transform();
-		
-		if(hasBody()) {
-			transform.setPosition(body.getPosition());
-			transform.setSize(body.getSize().x, body.getSize().y);
-		}
-		
-		components.values().stream().forEach(e -> e.applyTransformEffect(transform));
-		
-		return transform;
+
+	public String getName() {
+		return name;
 	}
 	
 	public boolean hasBody() {
-		return body != null;
+		return hasComponent(Body.class);
 	}
 	
 	public Body getBody() {
-		return body;
+		return getComponent(Body.class);
 	}
 	
 	public void setBody(Body body) {
-		this.body = body;
+		this.addComponent(body);
 	}
 	
-	public boolean renderable() {
-		return render != null;
+	public boolean hasRender() {
+		return hasComponent(Render.class);
 	}
 	
 	public Render getRender() {
-		return render;
+		return getComponent(Render.class);
 	}
 	
 	public void setRender(Render render) {
-		this.render = render;
+		this.addComponent(render);
 	}
 	
-	public boolean controllable() {
-		return controller != null;
+	public boolean hasController() {
+		return hasComponent(Controller.class);
 	}
 	
 	public Controller getController() {
-		return controller;
+		return getComponent(Controller.class);
 	}
 	
 	public void setController(Controller controller) {
-		this.controller = controller;
+		this.addComponent(controller);
 	}
 
-	public HashMap<Class<? extends EntityComponent>, EntityComponent> getComponents() {
+	@Override
+	public HashMap<Class<?>, EntityComponent> getComponents() {
 		return components;
 	}
 
-	public void setComponents(HashMap<Class<? extends EntityComponent>, EntityComponent> components) {
+	@Override
+	public void setComponents(HashMap<Class<?>, EntityComponent> components) {
 		this.components = components;
 	}
 	
+	@Override
 	public <T extends EntityComponent> T getComponent(Class<T> clazz) {
 		if(components.containsKey(clazz)) {
 			return clazz.cast(components.get(clazz));
 		}
 		return null;
 	}
-	
+
+	@Override
 	public boolean hasComponent(Class<? extends EntityComponent> clazz) {
 		return components.containsKey(clazz);
 	}
-	
-	public void addComponent(Class<? extends EntityComponent> clazz, EntityComponent component) {
+
+	@Override
+	public void addComponent(EntityComponent component) {
+		Class<?> clazz = component.getClass();
+		while(clazz.getSuperclass() != null && !clazz.getSuperclass().equals(EntityComponent.class)) {
+			clazz = clazz.getSuperclass();
+		}
 		components.put(clazz, component);
 	}
-	
+
+	@Override
 	public <T extends EntityComponent> T removeComponent(Class<T> clazz) {
 		return clazz.cast(components.remove(clazz));
 	}

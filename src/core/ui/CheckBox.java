@@ -5,12 +5,12 @@ import java.awt.geom.Rectangle2D;
 
 import org.lwjgl.util.vector.Vector3f;
 
+import core.event.AvoEvent;
 import core.render.DrawUtils;
 import core.ui.event.ActionEvent;
 import core.ui.event.ActionListener;
 import core.ui.event.MouseEvent;
 import core.ui.event.MouseListener;
-import core.ui.event.UIEvent;
 import core.ui.utils.Accessible;
 import core.ui.utils.HasText;
 import core.utilities.ValueSupplier;
@@ -96,7 +96,7 @@ public class CheckBox extends UIElement implements HasText, Accessible {
 	}
 	
 	@Override
-	public void fireEvent(UIEvent e) {
+	public void fireEvent(AvoEvent e) {
 		super.fireEvent(e);
 		
 		if(e instanceof ActionEvent) {

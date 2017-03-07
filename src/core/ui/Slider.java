@@ -1,11 +1,11 @@
 package core.ui;
 
+import core.event.AvoEvent;
 import core.render.SpriteList;
 import core.render.Transform;
 import core.ui.event.MouseEvent;
 import core.ui.event.MouseListener;
 import core.ui.event.MouseMotionListener;
-import core.ui.event.UIEvent;
 import core.ui.event.ValueChangeEvent;
 import core.ui.event.ValueChangeListener;
 import core.ui.utils.Accessible;
@@ -90,7 +90,7 @@ public class Slider extends UIElement implements Accessible {
 	}
 	
 	@Override
-	public void fireEvent(UIEvent e) {
+	public void fireEvent(AvoEvent e) {
 		super.fireEvent(e);
 		
 		if(e instanceof ValueChangeEvent) {
