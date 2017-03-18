@@ -75,9 +75,17 @@ public class MathUtils {
 		if ((t/=d/2) < 1) return c/2*t*t + b;
 		return -c/2 * ((--t)*(t-2) - 1) + b;
 	}
-	
+
+	public static double lerp(double startValue, double endValue, double time) {
+		 return (1 - time) * startValue + time * endValue;
+	}
+
 	public static float lerp(float startValue, float endValue, float time) {
-		  return (1 - time) * startValue + time * endValue;
+		return (1 - time) * startValue + time * endValue;
+	}
+
+	public static double distance(double x1, double y1, double x2, double y2) {
+		return Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
 	}
 	
 	public static Vector2f limitVector(Vector2f srcVector, float limit) {
@@ -105,5 +113,5 @@ public class MathUtils {
 		int a = hex.length() != 8 ? 255 : Integer.valueOf(hex.substring(6, 8), 16);
 		return new Vector4f(r / 255f, g / 255f, b / 255f, a / 255f);
 	}
-	
+
 }
