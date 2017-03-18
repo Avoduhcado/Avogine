@@ -16,7 +16,9 @@ public class Script {
 	private static final String START_EVENT = "EVENT";
 	
 	private static final JsonObject DEFAULT_SCRIPT = new JsonParser().parse("{" + START_EVENT + ": null}").getAsJsonObject();
-	public static final String testScript = "{\"EVENT\":[{\"TEXT\":\"Hello friends\"},{\"CHOICE\":{\"TITLE\":\"How are you?\",\"CHOICES\":[\"Good\",\"Bad\"],\"RESULTS\":{\"0\":[{\"TEXT\":\"Dope\"}],\"1\":[{\"TEXT\":\"Darn\"},{\"TEXT\":\"That sucks\"}]}}},{\"TEXT\":\"Well, see ya later.\"}]}";
+	public static final String testScript = "{\"EVENT\":[{\"TEXT\":\"Hello friends\"},{\"CHOICE\":{\"TITLE\":\"How are you?\","
+			+ "\"CHOICES\":[\"Good\",\"Bad\"],\"RESULTS\":{\"0\":[{\"TEXT\":\"Dope\"},{\"TEXT\":\"What\'s your name?\"},"
+			+ "{\"INPUT\":{\"STYLE\":\"PLAIN_TEXT\"}}],\"1\":[{\"TEXT\":\"Darn\"},{\"TEXT\":\"That sucks\"}]}}},{\"TEXT\":\"Well, see ya later.\"}]}";
 	
 	private Entity source;
 	private Entity reader;

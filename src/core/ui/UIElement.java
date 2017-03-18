@@ -33,22 +33,18 @@ public abstract class UIElement {
 	
 	protected final UIBounds uiBounds = new UIBounds();
 	
-	protected ValueSupplier<Double> x;
-	protected ValueSupplier<Double> y;
-	protected ValueSupplier<Double> width;
-	protected ValueSupplier<Double> height;
-	
 	protected UIFrame frame;
 	
 	protected boolean enabled = true;
 	
+	// TODO implement this correctly
 	private UIContainer container;
 	protected Panel parentPanel;
 	private int state = NORMAL;
 	
 	/** For managing keyboard mapped menus. 0 = up, 1 = down, 2 = right, 3 = left */
 	protected UIElement[] surroundings = new UIElement[4];
-		
+			
 	protected MouseListener mouseListener;
 	protected MouseMotionListener mouseMotionListener;
 	protected KeybindListener keybindListener;
@@ -151,7 +147,10 @@ public abstract class UIElement {
 	 */
 	public void setSurrounding(int index, UIElement surround) {
 		this.surroundings[index] = surround;
-		if(surround.getSurroundings()[Math.abs(index - 3)] == null) {
+		if(surround == null) {
+			return;
+		}
+		if(surround.getSurroundings()[Math.abs(index - 3)] != this) {
 			surround.setSurrounding(Math.abs(index - 3), this);
 		}
 	}
@@ -227,14 +226,15 @@ public abstract class UIElement {
 		this.completeScriptListener = null;
 	}
 	
-	public void addCompleteScriptListener(CompleteScriptListener l) {
+	public CompleteScriptListener addCompleteScriptListener(CompleteScriptListener l) {
 		this.completeScriptListener = l;
+		return completeScriptListener;
 	}
 	
 	public void fireEvent(AvoEvent e) {
 		if(e instanceof MouseEvent) {
 			processMouseEvent((MouseEvent) e);
-		} else if(e instanceof KeybindListener) {
+		} else if(e instanceof KeybindEvent) {
 			processKeybindEvent((KeybindEvent) e);
 		} else if(e instanceof TimeEvent) {
 			processTimeEvent((TimeEvent) e);

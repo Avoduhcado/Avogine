@@ -88,26 +88,6 @@ public class Entity implements ComponentBased<EntityComponent>, Comparable<Entit
 		}
 		
 		getComponent(Interaction.class).interact(event);
-		
-		/*switch(event.getInteractType()) {
-		case InteractEvent.AUTORUN:
-			if(components.containsKey(AutorunInteraction.class)) {
-				((Interaction) components.get(AutorunInteraction.class)).interact(event);
-			}
-			break;
-		case InteractEvent.ON_TOUCH:
-			if(components.containsKey(TouchInteraction.class)) {
-				((Interaction) components.get(TouchInteraction.class)).interact(event);
-			}
-			break;
-		case InteractEvent.ON_ACTIVATE:
-		case InteractEvent.INTERRUPT:
-			if(components.containsKey(ActivateInteraction.class)) {
-				//getRender().lookAt(event.getInteractor());
-				((Interaction) components.get(ActivateInteraction.class)).interact(event);
-			}
-			break;
-		}*/
 	}
 
 	public String getName() {
@@ -122,8 +102,8 @@ public class Entity implements ComponentBased<EntityComponent>, Comparable<Entit
 		return getComponent(Body.class);
 	}
 	
-	public void setBody(Body body) {
-		this.addComponent(body);
+	public Body addBody(Body body) {
+		return addComponent(body);
 	}
 	
 	public boolean hasRender() {
@@ -134,8 +114,8 @@ public class Entity implements ComponentBased<EntityComponent>, Comparable<Entit
 		return getComponent(Render.class);
 	}
 	
-	public void setRender(Render render) {
-		this.addComponent(render);
+	public Render addRender(Render render) {
+		return addComponent(render);
 	}
 	
 	public boolean hasController() {
@@ -146,8 +126,8 @@ public class Entity implements ComponentBased<EntityComponent>, Comparable<Entit
 		return getComponent(Controller.class);
 	}
 	
-	public void setController(Controller controller) {
-		this.addComponent(controller);
+	public Controller addController(Controller controller) {
+		return addComponent(controller);
 	}
 
 	@Override
@@ -174,12 +154,13 @@ public class Entity implements ComponentBased<EntityComponent>, Comparable<Entit
 	}
 
 	@Override
-	public void addComponent(EntityComponent component) {
+	public <T extends EntityComponent> T addComponent(T component) {
 		Class<?> clazz = component.getClass();
 		while(clazz.getSuperclass() != null && !clazz.getSuperclass().equals(EntityComponent.class)) {
 			clazz = clazz.getSuperclass();
 		}
 		components.put(clazz, component);
+		return component;
 	}
 
 	@Override

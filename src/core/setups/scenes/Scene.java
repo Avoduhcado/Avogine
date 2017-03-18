@@ -31,7 +31,7 @@ public class Scene implements ComponentBased<SceneComponent>, EntityContainer {
 	
 	public Scene() {
 		Entity ent = new Entity(this);
-		Render render = new PlainRender(ent, "AGDG Logo");
+		Render render = ent.addRender(new PlainRender(ent, "AGDG Logo"));
 		TweenEffect<?> e = new Tween3fEffect(new Vector3f(render.getTransform().getRotation(), 0, 0), new Vector3f(36f, 0, 0), 2f, false, Tween.IN_OUT) {
 			@Override
 			protected void applyEffect(Vector3f value) {
@@ -64,22 +64,18 @@ public class Scene implements ComponentBased<SceneComponent>, EntityContainer {
 		e.setLoop(true);
 		e.setReverse(true);
 		render.addTweenEffect(e);
-		
-		ent.setRender(render);
-		ent.setBody(new PlainBody(ent, new Vector3f(-16f, -16f, 0f), new Vector3f(256f, 256f, 0f)));
+		ent.addBody(new PlainBody(ent, new Vector3f(-16f, -16f, 0f), new Vector3f(256f, 256f, 0f)));
 		ent.addComponent(new ActivateInteraction(ent, new Script(ent, Script.testScript)));
 		addEntity(ent);
 		
 		System.out.println(ent.getComponent(Interaction.class));
-		//ent.addComponent(new ActivateInteraction(ent, new Script(ent, "Butts")));
 		System.out.println(ent.getComponent(TouchInteraction.class));
 		System.out.println(ent.getComponent(ActivateInteraction.class));
 		
 		ent = new Entity(this);
-		ent.setRender(new PlainRender(ent, "AGDG Logo"));
-		ent.setBody(new PlainBody(ent, new Vector3f(0f, 0f, 0f), new Vector3f(32f, 32f, 0f)));
-		ent.setController(new PlayerController(ent));
-		//ent.addComponent(AutorunInteraction.class, new AutorunInteraction(ent, new Script(ent, "Butts")));
+		ent.addRender(new PlainRender(ent, "AGDG Logo"));
+		ent.addBody(new PlainBody(ent, new Vector3f(0f, 0f, 0f), new Vector3f(32f, 32f, 0f)));
+		ent.addController(new PlayerController(ent));
 		addEntity(ent);
 		
 		Camera.get().setFocus(ent.getBody());
@@ -150,9 +146,9 @@ public class Scene implements ComponentBased<SceneComponent>, EntityContainer {
 	}
 
 	@Override
-	public void addComponent(SceneComponent component) {
+	public <T extends SceneComponent> T addComponent(T component) {
 		// TODO Auto-generated method stub
-		
+		return component;
 	}
 
 	@Override

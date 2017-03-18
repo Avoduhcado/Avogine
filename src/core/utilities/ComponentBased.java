@@ -15,7 +15,7 @@ public interface ComponentBased<T> {
 	 */
 	public <U extends T> U getComponent(Class<U> clazz);
 	public boolean hasComponent(Class<? extends T> clazz);
-	public void addComponent(T component);
+	public <U extends T> U addComponent(U component);
 	public <U extends T> U removeComponent(Class<U> clazz);
 	
 }

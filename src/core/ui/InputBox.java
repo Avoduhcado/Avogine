@@ -11,8 +11,11 @@ import org.lwjgl.input.Keyboard;
 import core.event.AvoEvent;
 import core.ui.event.ActionEvent;
 import core.ui.event.ActionListener;
+import core.ui.event.CompleteScriptEvent;
 import core.ui.event.KeyEvent;
 import core.ui.event.KeyListener;
+import core.ui.event.KeybindEvent;
+import core.ui.event.KeybindListener;
 import core.ui.event.MouseEvent;
 import core.ui.event.MouseListener;
 import core.ui.event.TimeEvent;
@@ -22,6 +25,7 @@ import core.ui.event.ValueChangeListener;
 import core.ui.utils.Accessible;
 import core.ui.utils.HasText;
 import core.ui.utils.InputStyle;
+import core.utilities.keyboard.Keybind;
 import core.utilities.text.Text;
 import core.utilities.text.TextModifier;
 import core.utilities.text.TextModifier.TextModValue;
@@ -60,6 +64,7 @@ public class InputBox extends UIElement implements Accessible, HasText {
 		addMouseListener(new DefaultInputMouseAdapter());
 		addTimeListener(new DefaultInputTimeAdapter());
 		addKeyListener(createKeyListener(style));
+		addKeybindListener(new DefaultInputKeybindAdapter());
 	}
 	
 	public InputBox(String text, InputStyle style) {
@@ -87,7 +92,7 @@ public class InputBox extends UIElement implements Accessible, HasText {
 	 * Fit bounds to included text
 	 */
 	protected void resize() {
-		setSize(Text.getDefault().getWidth(text), Text.getDefault().getHeight(text));
+		setSize(Text.getDefault().getWidth(text + CARET), Text.getDefault().getHeight(text + CARET));
 	}
 	
 	/**
@@ -212,7 +217,7 @@ public class InputBox extends UIElement implements Accessible, HasText {
 					} else if(e.getKey() == Keyboard.KEY_BACK && !text.isEmpty()) {
 						// Remove the last character from text
 						text = text.substring(0, text.length() - 1);
-					} else if(text.length() <= textLimit) {
+					} else if(text.length() <= textLimit || textLimit == 0) {
 						// If the user is pasting text
 						if(e.getKey() == Keyboard.KEY_V && (Keyboard.isKeyDown(Keyboard.KEY_LCONTROL) 
 								|| Keyboard.isKeyDown(Keyboard.KEY_RCONTROL))) {
@@ -226,19 +231,15 @@ public class InputBox extends UIElement implements Accessible, HasText {
 					}
 					resize();
 				}
-				
-				if(e.getKey() == Keyboard.KEY_RETURN) {
-					InputBox.this.fireEvent(new ValueChangeEvent(text, null));
-					//InputBox.this.setState(DISABLED);
-				}
 			});
 		case KEYBINDS:
 			return (e -> {
 				text = e.getKeyName();
 				resize();
 
-				//InputBox.this.setState(DISABLED);
+				e.consume();
 				InputBox.this.fireEvent(new ValueChangeEvent(text, null));
+				InputBox.this.fireEvent(new CompleteScriptEvent());
 			});
 		}
 		
@@ -301,7 +302,6 @@ public class InputBox extends UIElement implements Accessible, HasText {
 	class DefaultInputMouseAdapter implements MouseListener {
 
 		public void mouseClicked(MouseEvent e) {
-			//setState(getState() == ENABLED ? DISABLED : ENABLED);
 			access(!hasFocus());
 			InputBox.this.fireEvent(new ActionEvent());
 		}
@@ -318,14 +318,12 @@ public class InputBox extends UIElement implements Accessible, HasText {
 			if(!hasFocus()) {
 				textColor = "lightGray";
 			}
-			//textColor = "white";
 		}
 		
 		public void mouseExited(MouseEvent e) {
 			if(!hasFocus()) {
 				textColor = "gray";
 			}
-			//textColor = "gray";
 		}
 	}
 
@@ -341,4 +339,16 @@ public class InputBox extends UIElement implements Accessible, HasText {
 		}
 	}
 	
+	class DefaultInputKeybindAdapter implements KeybindListener {
+		@Override
+		public void keybindClicked(KeybindEvent e) {
+			if(e.isConsumed() || !e.getKeybind().matches(Keybind.CONFIRM) || !e.getKeybind().clicked()) {
+				return;
+			}
+			
+			e.consume();
+			InputBox.this.fireEvent(new ValueChangeEvent(text, null));
+			InputBox.this.fireEvent(new CompleteScriptEvent());
+		}
+	}
 }

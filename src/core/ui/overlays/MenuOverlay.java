@@ -8,7 +8,7 @@ import core.ui.UIElement;
 
 public abstract class MenuOverlay extends ElementGroup {
 
-	private Vector4f glassColor = new Vector4f(0f, 0f, 0f, 0.35f);
+	protected Vector4f glassColor = new Vector4f(0f, 0f, 0f, 0.35f);
 	
 	public MenuOverlay() {
 		super();

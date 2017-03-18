@@ -166,7 +166,8 @@ public class TextBox extends UIElement implements HasText, Accessible {
 	class DefaultKeybindAdapter implements KeybindListener {
 		@Override
 		public void keybindClicked(KeybindEvent e) {
-			if(e.getKeybind().equals(Keybind.CONFIRM) && e.getKeybind().clicked()) {
+			if(!e.isConsumed() && e.getKeybind().equals(Keybind.CONFIRM) && e.getKeybind().clicked()) {
+				e.consume();
 				if(textFill < getLength()) {
 					textFill = getLength();
 					setSize(getWidth((int) textFill + 1), getHeight((int) textFill + 1));
@@ -175,7 +176,6 @@ public class TextBox extends UIElement implements HasText, Accessible {
 				} else {
 					fireEvent(new CompleteScriptEvent());
 				}
-				e.consume();
 			}
 		}
 	}

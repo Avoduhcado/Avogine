@@ -8,7 +8,8 @@ public class Label extends UIElement {
 	
 	public Label(String text) {
 		this.text = text;
-		setBounds(0, 0, Text.getDefault().getWidth(text), Text.getDefault().getHeight(text));
+		setBounds(() -> 0d, () -> 0d, 
+				() -> (double) Text.getDefault().getWidth(this.text), () -> (double) Text.getDefault().getHeight(this.text));
 	}
 	
 	@Override

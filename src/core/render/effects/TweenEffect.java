@@ -7,6 +7,8 @@ import core.utilities.MathUtils;
 
 public abstract class TweenEffect<T extends Vector> {
 	
+	// TODO Make this more parameterized rather than anonymisable
+	
 	protected T startingValue;
 	protected T endingValue;
 	protected float duration;
