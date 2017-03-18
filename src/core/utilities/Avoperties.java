@@ -1,5 +1,6 @@
 package core.utilities;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -10,6 +11,16 @@ public class Avoperties extends Properties {
 
 	public Avoperties(String fileName) {
 		String propFileName = fileName;
+		
+		File properties = new File(fileName);
+		if(!properties.exists()) {
+			try {
+				properties.createNewFile();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		
 		try(InputStream inputStream = new FileInputStream(propFileName)) {
 			load(inputStream);
 		} catch(IOException e) {

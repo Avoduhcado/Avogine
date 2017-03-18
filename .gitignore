@@ -1,5 +1,4 @@
 /bin/
 config
-/properties/
 *.properties
 /.classpath
