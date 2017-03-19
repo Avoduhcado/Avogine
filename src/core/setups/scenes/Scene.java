@@ -14,6 +14,7 @@ import core.Camera;
 import core.entities.Entity;
 import core.entities.bodies.Box2DBody;
 import core.entities.bodies.PlainBody;
+import core.entities.bodies.TileBody;
 import core.entities.components.interactions.ActivateInteraction;
 import core.entities.components.interactions.Interaction;
 import core.entities.components.interactions.TouchInteraction;
@@ -116,9 +117,17 @@ public class Scene implements ComponentBased<SceneComponent>, EntityContainer {
 			walls.clear();
 		}
 		
+		Entity tile = null;
+		
 		for(int x = 0; x<gridArray.length; x++) {
 			for(int y = 0; y<gridArray[0].length; y++) {
 				if(gridArray[x][y]) {
+					tile = new Entity(this);
+					tile.addBody(new TileBody(tile, new Vector3f(x * WorldGeneratorBox2D.SCALE_FACTOR, y * WorldGeneratorBox2D.SCALE_FACTOR, 0),
+							new Vector3f(WorldGeneratorBox2D.SCALE_FACTOR, WorldGeneratorBox2D.SCALE_FACTOR, 0)));
+					tile.addRender(new PlainRender(tile, "Sandstone"));
+					addEntity(tile);
+					
 					if(x == 0 || (x > 0 && !gridArray[x - 1][y])) {
 						walls.add(BodyBuilder.createEdge(world, new Vec2(x * WorldGeneratorBox2D.SCALE_FACTOR, y * WorldGeneratorBox2D.SCALE_FACTOR),
 								new Vec2(0, WorldGeneratorBox2D.SCALE_FACTOR)));
@@ -135,6 +144,12 @@ public class Scene implements ComponentBased<SceneComponent>, EntityContainer {
 						walls.add(BodyBuilder.createEdge(world, new Vec2(x * WorldGeneratorBox2D.SCALE_FACTOR, (y + 1) * WorldGeneratorBox2D.SCALE_FACTOR),
 								new Vec2(WorldGeneratorBox2D.SCALE_FACTOR, 0)));
 					}
+				} else {
+					tile = new Entity(this);
+					tile.addBody(new TileBody(tile, new Vector3f(x * WorldGeneratorBox2D.SCALE_FACTOR, y * WorldGeneratorBox2D.SCALE_FACTOR, 0),
+							new Vector3f(WorldGeneratorBox2D.SCALE_FACTOR, WorldGeneratorBox2D.SCALE_FACTOR, 0)));
+					tile.addRender(new PlainRender(tile, "Sand"));
+					addEntity(tile);
 				}
 			}
 		}

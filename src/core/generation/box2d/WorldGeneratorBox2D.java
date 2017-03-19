@@ -20,7 +20,7 @@ import core.utilities.MathUtils;
 
 public class WorldGeneratorBox2D extends WorldGenerator {
 
-	public static final float SCALE_FACTOR = 60f;
+	public static final float SCALE_FACTOR = 64f;
 	private static final float timeStep = 1 / 60f;
 	private static final int velocityIterations = 8;
 	private static final int positionIterations = 3;
