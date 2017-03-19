@@ -1,9 +1,13 @@
 package core.setups;
 
+import org.jbox2d.collision.shapes.CircleShape;
+import org.jbox2d.collision.shapes.EdgeShape;
+import org.jbox2d.dynamics.Body;
 import org.lwjgl.util.vector.Vector3f;
 import org.lwjgl.util.vector.Vector4f;
 
 import core.Camera;
+import core.entities.controllers.PlayerController;
 import core.entities.events.InteractEvent;
 import core.render.DrawUtils;
 import core.setups.scenes.Scene;
@@ -32,9 +36,22 @@ public class Stage extends GameSetup {
 	}
 	
 	private void initScene() {
-		scene = new Scene();
+		loadScene(new boolean[0][0]);
 		
 		scene.fireEvent(new InteractEvent(InteractEvent.INTERACT, null));
+	}
+	
+	public void loadScene(boolean[][] gridArray) {
+		// TODO Load this properly
+		scene = new Scene();
+		scene.setGrid(gridArray);
+		
+		final Vector3f spawn = scene.getOriginRoomCoords(gridArray);
+	
+		scene.getEntities().stream()
+			.filter(e -> e.hasController() && e.getController() instanceof PlayerController)
+			.map(e -> e.getBody())
+			.forEach(e -> e.setPosition(spawn));
 	}
 	
 	@Override
@@ -42,6 +59,8 @@ public class Stage extends GameSetup {
 		if(pause) {
 			return;
 		}
+		
+		scene.getWorld().step(1 / 60f, 8, 3);
 	}
 
 	@Override
@@ -52,6 +71,27 @@ public class Stage extends GameSetup {
 	@Override
 	public void drawUI() {
 		super.drawUI();
+		
+		for(Body body = scene.getWorld().getBodyList(); body.getNext() != null; body = body.getNext()) {
+			switch(body.getFixtureList().getShape().getType()) {
+			case CHAIN:
+				break;
+			case CIRCLE:
+				DrawUtils.setColor(new Vector3f(1, 0, 1));
+				CircleShape circle = (CircleShape) body.getFixtureList().getShape();
+				DrawUtils.drawBox2DCircle(body, circle, 1);
+				break;
+			case EDGE:
+				DrawUtils.setColor(new Vector3f(1, 0, 0));
+				EdgeShape edge = (EdgeShape) body.getFixtureList().getShape();
+				DrawUtils.drawBox2DEdge(body, edge, 1);
+				break;
+			case POLYGON:
+				break;
+			default:
+				break;
+			}
+		}
 		
 		if(pause) {
 			DrawUtils.fillScreen(0, 0, 0, 0.65f);

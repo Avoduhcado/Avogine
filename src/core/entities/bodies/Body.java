@@ -16,7 +16,9 @@ public abstract class Body extends EntityComponent implements BodyListener {
 	}
 
 	public abstract Vector3f getPosition();
+	public abstract void setPosition(Vector3f position);
 	public abstract Vector3f getSize();
+	public abstract void setSize(Vector3f size);
 	
 	public Vector3f getCenter() {
 		return Vector3f.add(getPosition(), (Vector3f) new Vector3f().set(getSize()).scale(0.5f), null);

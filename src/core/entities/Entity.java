@@ -3,7 +3,11 @@ package core.entities;
 import java.io.Serializable;
 import java.util.HashMap;
 
+import org.lwjgl.util.vector.Vector3f;
+
+import core.Theater;
 import core.entities.bodies.Body;
+import core.entities.bodies.Box2DBody;
 import core.entities.components.EntityComponent;
 import core.entities.components.interactions.Interaction;
 import core.entities.controllers.Controller;
@@ -12,6 +16,7 @@ import core.entities.events.ControllerEvent;
 import core.entities.events.InteractEvent;
 import core.entities.renders.Render;
 import core.event.AvoEvent;
+import core.render.DrawUtils;
 import core.setups.utils.EntityContainer;
 import core.utilities.ComponentBased;
 
@@ -33,6 +38,14 @@ public class Entity implements ComponentBased<EntityComponent>, Comparable<Entit
 	public void draw() {
 		if(hasRender()) {
 			getRender().draw();
+		}
+		
+		if(Theater.debug) {
+			if(hasBody() && getBody() instanceof Box2DBody) {
+				DrawUtils.setColor(new Vector3f((float) Math.random(),(float)  Math.random(), (float) Math.random()));
+				Box2DBody b2dbody = (Box2DBody) getBody();
+				DrawUtils.drawBox2DShape(b2dbody.getBody(), b2dbody.getBody().getFixtureList().getShape());
+			}
 		}
 	}
 

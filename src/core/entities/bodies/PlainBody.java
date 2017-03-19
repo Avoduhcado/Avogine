@@ -3,13 +3,13 @@ package core.entities.bodies;
 import org.lwjgl.util.vector.Vector3f;
 
 import core.entities.Entity;
-import core.entities.events.BodyEvent;
 import core.entities.events.BodyCollisionEvent;
+import core.entities.events.BodyEvent;
 
 public class PlainBody extends Body {
 
-	private Vector3f position;
-	private Vector3f size;
+	protected Vector3f position;
+	protected Vector3f size;
 	
 	public PlainBody(Entity entity, Vector3f vec, Vector3f size) {
 		super(entity);
@@ -23,8 +23,18 @@ public class PlainBody extends Body {
 	}
 
 	@Override
+	public void setPosition(Vector3f position) {
+		this.position.set(position);
+	}
+
+	@Override
 	public Vector3f getSize() {
 		return size;
+	}
+
+	@Override
+	public void setSize(Vector3f size) {
+		this.size.set(size);
 	}
 
 	@Override

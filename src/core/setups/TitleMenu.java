@@ -35,10 +35,16 @@ public class TitleMenu extends GameSetup {
 		logo.setPosition(() -> Camera.get().getDisplayWidth(0.5f), () -> Camera.get().getDisplayHeight(0.2667f));
 		logo.setAlignments(VerticalAlign.CENTER, HorizontalAlign.CENTER);
 		addUI(logo);
-				
+
+		// Temp to test world gen stuff
+		Button worldGen = new Button("World Gen (Temp)");
+		worldGen.setPosition(() -> Camera.get().getDisplayWidth(0.5f), () -> Camera.get().getDisplayHeight(0.55f));
+		worldGen.setHorizontalAlign(HorizontalAlign.CENTER);
+		worldGen.addActionListener(e -> Theater.get().setSetup(new TestWorldGenerator()));
+		
 		// Initialize game buttons
 		Button newGame = new Button("New Game");
-		newGame.setPosition(() -> Camera.get().getDisplayWidth(0.5f), () -> Camera.get().getDisplayHeight(0.55f));
+		newGame.setPosition(() -> Camera.get().getDisplayWidth(0.5f), () -> worldGen.getBounds().getMaxY());
 		newGame.setHorizontalAlign(HorizontalAlign.CENTER);
 		newGame.addActionListener(e -> Theater.get().setSetup(new Stage()));
 		
@@ -57,15 +63,17 @@ public class TitleMenu extends GameSetup {
 		exit.addActionListener(e -> Theater.get().close());
 
 		// Initialize game buttons
+		worldGen.setSurrounding(3, newGame);
 		newGame.setSurrounding(3, options);
 		options.setSurrounding(3, exit);
-		exit.setSurrounding(3, newGame);
+		exit.setSurrounding(3, worldGen);
 		
 		ElementGroup buttons = new ElementGroup();
+		buttons.addUI(worldGen);
 		buttons.addUI(newGame);
 		buttons.addUI(options);
 		buttons.addUI(exit);
-		buttons.setKeyboardNavigable(true, newGame);
+		buttons.setKeyboardNavigable(true, worldGen);
 		//buttons.setSelectionPointer("screen ui/Pointer");
 		buttons.setFrame("Menu2");
 		addUI(buttons);

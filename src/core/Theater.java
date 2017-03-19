@@ -87,7 +87,8 @@ public class Theater {
 		
 		Camera.init();
 		SoundStore.get().init();
-		Text.loadFont("DEBUG", "Benegraphic");
+		Text.loadFont("DEFAULT", "Benegraphic");
+		Text.loadFont("DEBUG", "Pixeled");
 		Config.loadConfig();
 		
 		setSetup(new SplashScreen());

@@ -237,13 +237,13 @@ public class WorldGeneratorBox2D extends WorldGenerator {
 					// Horizontal hall
 					hallways.add(new Line2D.Double(hallRect.getX(), hallRect.getCenterY(), hallRect.getMaxX(), hallRect.getCenterY()));
 				} else {
-					if(Math.random() > 0.5) {
+					/*if(Math.random() > 0.5) {
 						curvedHallways.add(new Arc2D.Double(room.union(e), 0, 360, 0));
-					} else {
+					} else {*/
 						hallways.add(new Line2D.Double(room.getCenterX() > e.getCenterX() ? room.getX() : room.getMaxX(),
 								room.getCenterY(), e.getCenterX(),
 								room.getCenterY() < e.getCenterY() ? e.getY() : e.getMaxY()));
-					}
+					//}
 					/*
 					
 					// Corner hall
@@ -268,9 +268,9 @@ public class WorldGeneratorBox2D extends WorldGenerator {
 		for(Line2D hall : hallways) {
 			lineLerp(hall, hallwayRooms);
 		}
-		for(Arc2D curve : curvedHallways) {
+		/*for(Arc2D curve : curvedHallways) {
 			arcLerp(curve, hallwayRooms);
-		}
+		}*/
 		
 		return hallwayRooms;
 	}
